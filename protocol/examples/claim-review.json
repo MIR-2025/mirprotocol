@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "type": "review.submitted",
+  "domain": "reviews.example.com",
+  "subject": "0bddd2aaf7b9de1ec3eadbb01bbb75e1d3064503da9b670a6f7c74feb790e350",
+  "timestamp": "2026-02-14T18:45:00Z",
+  "metadata": {
+    "verified_purchase": true
+  }
+}
