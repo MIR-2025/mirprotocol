@@ -1,0 +1,15 @@
+{
+  "description": "A claim signed by 'wrongKey' but verified against 'primary'. The fingerprint in the claim belongs to wrongKey, so verifying against primary's public key MUST return REJECT (fingerprint mismatch).",
+  "verifyWith": "primary",
+  "expectedResult": "REJECT",
+  "expectedError": "Key fingerprint does not match provided public key",
+  "claim": {
+    "mir": 1,
+    "type": "account.created",
+    "domain": "example.com",
+    "subject": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "timestamp": "2026-01-15T10:00:00Z",
+    "keyFingerprint": "b0b793af6713a718d48b0938b6402d02b4a58f92e4d3450da00e811295e44e9d",
+    "sig": "oAElGu0SaIpBClz/tfl4Mu3I2M0pmQxpEwj2+cwrlNmblzGugVfjwL9RRbj7rQ0PCFomqDQuqXllkt9zAVXODA=="
+  }
+}

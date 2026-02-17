@@ -66,13 +66,14 @@ The MIR protocol assumes:
 
 ## Attack Surface Summary
 
-| Attack | Prevented? | Mechanism |
-|--------|-----------|-----------|
-| Claim forgery | Yes | Ed25519 signature |
-| Claim tampering | Yes | Ed25519 signature |
-| False claims (honest domain) | No | Out of scope |
-| Key compromise | Partially | Key rotation, expiry |
-| DNS spoofing | Partially | DNSSEC, `.well-known` fallback |
-| Registry tampering | Yes | Client-side signature verification |
-| Subject deanonymization | Partially | Hash entropy, domain scoping |
-| Collusion | No | Out of scope |
+| Attack | Prevented? | Mechanism | Specified in |
+|--------|-----------|-----------|-------------|
+| Claim forgery | Yes | Ed25519 signature | [04 — Signature Model](04-signature-model.md) |
+| Claim tampering | Yes | Ed25519 signature | [06 — Verification Process](06-verification-process.md) |
+| False claims (honest domain) | No | Out of scope | [10 — Non-Goals](10-non-goals.md) |
+| Key compromise | Partially | Key rotation, revocation, expiry | [05 — Domain Key Discovery](05-domain-key-discovery.md#key-lifecycle) |
+| DNS spoofing | Partially | DNSSEC, `.well-known` fallback | [05 — Domain Key Discovery](05-domain-key-discovery.md#discovery-priority) |
+| Registry tampering | Yes | Client-side signature verification | [07 — Registry Role](07-registry-role.md) |
+| Replay / context abuse | By design | Claims are unbound; freshness is verifier policy | [08 — Security Considerations](08-security-considerations.md#replay-and-freshness) |
+| Subject deanonymization | Partially | Hash entropy, domain scoping | [08 — Security Considerations](08-security-considerations.md#subject-privacy) |
+| Collusion | No | Out of scope | [10 — Non-Goals](10-non-goals.md) |

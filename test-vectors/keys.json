@@ -1,0 +1,26 @@
+{
+  "description": "Ed25519 public keys for test vector verification. These are real keys — the corresponding private keys were used to generate the test claim signatures.",
+  "keys": {
+    "primary": {
+      "pub": "WJTKftaU3VQC0qkCuHCnSq/sPT6kZ/+wGLqiFGPDOBM=",
+      "fingerprint": "4f0396864bb409e0bbfb3e5feb703dec2ae2c30383c78e14b9f6a01d765e618b",
+      "alg": "Ed25519",
+      "created": "2026-01-01T00:00:00Z",
+      "expires": null
+    },
+    "wrongKey": {
+      "pub": "2IiQfdebiba430JwL6y5M7jb2sAKd+B1VjVJerJqKpM=",
+      "fingerprint": "b0b793af6713a718d48b0938b6402d02b4a58f92e4d3450da00e811295e44e9d",
+      "alg": "Ed25519",
+      "created": "2026-01-01T00:00:00Z",
+      "expires": null
+    },
+    "expiredKey": {
+      "pub": "KCSifzHJiOXsYz59d7i2l/hWwtghlw4qlB89xNMDrq0=",
+      "fingerprint": "1cd52fe572063293e590e3f7c427cfb4b9cb3821469893c3d0782e4030dfdf0d",
+      "alg": "Ed25519",
+      "created": "2025-01-01T00:00:00Z",
+      "expires": "2025-12-31T23:59:59Z"
+    }
+  }
+}

@@ -62,6 +62,35 @@ Claims are signed, not encrypted. The signature protects integrity and authorshi
 - `.well-known/mir.json` MUST be served over HTTPS.
 - DNS TXT records are inherently unencrypted; DNSSEC is RECOMMENDED.
 
-## Replay Considerations
+## Replay and Freshness
 
-A valid signed claim can be presented to multiple registries or verifiers. This is by design — claims are portable. The claim itself is not a token or credential; presenting it does not grant access or authorize actions. It is an assertion of historical fact.
+### Claims Are Not Credentials
+
+A MIR claim is an assertion of historical fact, not a bearer token. Presenting a claim does not grant access or authorize actions. A valid claim can be presented to multiple registries or verifiers without changing its meaning. This is by design — claims are portable.
+
+### Why Claims Have No Expiry
+
+Claims do not expire. A `transaction.completed` from 2024 is still a valid assertion in 2030. The signature proves authorship and integrity regardless of age. Expiry would destroy the continuity property that MIR exists to provide.
+
+### Freshness Is a Verifier Concern
+
+The protocol does not enforce freshness. Verifiers MAY apply their own freshness policies:
+
+- **Recency windows:** Accept only claims with `timestamp` within the last N days.
+- **Registry cross-reference:** Check the registry's `ingestedAt` to bound when a claim was first seen.
+- **Key validity windows:** Accept only claims whose `timestamp` falls within the signing key's `created`–`expires` range.
+
+These are verifier-side policy decisions. The protocol provides the data; the verifier applies the rules.
+
+### Context Binding
+
+MIR claims are intentionally unbound — they carry no audience, nonce, or relying party field. This is a design choice:
+
+- **Bound claims** (like OIDC tokens) are single-use and context-specific. They prevent replay but sacrifice portability.
+- **Unbound claims** (like MIR) are reusable and portable. They can be verified by anyone, anywhere, anytime.
+
+If a verifier needs context binding (e.g., "this claim was presented specifically to me, right now"), the binding MUST happen at the application layer — not in the MIR protocol. For example, a verifier can require the subject to sign a challenge that includes the claim ID, proving they control the subject hash and are presenting the claim intentionally.
+
+### Duplicate Submission
+
+A claim submitted to multiple registries is not an attack — it's expected behavior. Registries SHOULD deduplicate by claim signature (identical `sig` values represent the same claim). A claim's identity is its signature.

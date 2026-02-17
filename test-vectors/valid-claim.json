@@ -1,0 +1,19 @@
+{
+  "description": "A valid MIR claim. Signed by the 'primary' key. Verification MUST return ACCEPT.",
+  "verifyWith": "primary",
+  "expectedResult": "ACCEPT",
+  "canonicalForm": "{\"domain\":\"marketplace.example.com\",\"keyFingerprint\":\"4f0396864bb409e0bbfb3e5feb703dec2ae2c30383c78e14b9f6a01d765e618b\",\"metadata\":{\"amount\":149.99,\"currency\":\"USD\"},\"mir\":1,\"subject\":\"ea3eeb449dc86b1a3f7fe8567c939b0da26437ecce5e6a7a1f275d2b07ada6d9\",\"timestamp\":\"2026-02-16T15:30:00Z\",\"type\":\"transaction.completed\"}",
+  "claim": {
+    "mir": 1,
+    "type": "transaction.completed",
+    "domain": "marketplace.example.com",
+    "subject": "ea3eeb449dc86b1a3f7fe8567c939b0da26437ecce5e6a7a1f275d2b07ada6d9",
+    "timestamp": "2026-02-16T15:30:00Z",
+    "keyFingerprint": "4f0396864bb409e0bbfb3e5feb703dec2ae2c30383c78e14b9f6a01d765e618b",
+    "metadata": {
+      "amount": 149.99,
+      "currency": "USD"
+    },
+    "sig": "F2HpNyZjUYdUGfyjlCLcqTRQIiBzg5p18egQ7vBturUd6UjegNa0SFSmPFNNioF4MA2WB9fY3TFZCJP4/9TpDw=="
+  }
+}

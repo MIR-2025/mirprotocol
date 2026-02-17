@@ -62,6 +62,46 @@ A registry MUST NOT:
 - Require API keys for verification (read) operations.
 - Strip or alter signatures.
 
+## Storage and Indexing
+
+### What a Registry Stores
+
+A registry ingests and stores the **complete signed claim** — all fields including `sig`. Claims are stored verbatim. No fields are stripped, transformed, or re-encoded.
+
+In addition to the claim itself, a registry records:
+
+| Field | Description |
+|-------|-------------|
+| `claimId` | Registry-assigned opaque identifier (e.g., `claim_abc123`) |
+| `ingestedAt` | ISO 8601 timestamp of when the registry received the claim |
+| `sigHash` | SHA-256 hash of the `sig` field — used for deduplication |
+
+### Indexing
+
+A registry MUST support lookup by:
+
+- `claimId` — direct single-claim retrieval.
+- `subject` — all claims for a given subject hash.
+- `domain` — all claims from a given domain.
+
+A registry SHOULD support filtering by:
+
+- `type` — claim type.
+- `timestamp` range — `after` and `before` parameters.
+- Combined queries — e.g., subject + domain + type.
+
+A registry MUST NOT support unfiltered listing of all claims.
+
+### Deduplication
+
+The same claim (identical `sig`) submitted multiple times MUST be stored only once. The `sigHash` field is the deduplication key. Duplicate submissions return the existing claim, not an error.
+
+### Conflict Resolution
+
+There are no conflicts to resolve. Claims are append-only. Two claims from the same domain about the same subject at the same time are both valid — they are two separate signed assertions. The registry stores both.
+
+If a domain issues a correction (e.g., `transaction.refunded` after `transaction.completed`), both claims exist in the registry. Verifiers interpret the sequence; the registry does not.
+
 ## Relationship to Domains
 
 Domains submit claims to registries for distribution and discoverability. This is a convenience, not a requirement. A domain can also publish claims on its own infrastructure, and verifiers can check them directly.

@@ -25,17 +25,34 @@ The signature covers a **canonical form** of the claim payload. This ensures tha
 ### Rules
 
 1. Start with the complete claim object.
-2. **Remove** the `sig` field.
-3. Serialize the remaining object as JSON with:
-   - Keys sorted lexicographically (Unicode code point order), recursively.
-   - No whitespace between tokens (no spaces, no newlines).
-   - No trailing commas.
-   - No BOM.
-   - Numbers serialized without unnecessary precision (no trailing zeros after decimal point, except: `1.0` is valid).
-   - Strings escaped per RFC 8259.
-4. Encode the resulting string as **UTF-8 bytes**.
+2. **Remove** the `sig` field. No other fields are removed.
+3. Serialize the remaining object as JSON with the following rules:
+   - **Key ordering:** Keys sorted lexicographically by Unicode code point value, applied recursively to all nested objects.
+   - **Whitespace:** No whitespace between tokens. No spaces after `:` or `,`. No newlines. No indentation.
+   - **Trailing commas:** None.
+   - **BOM:** None. The output MUST NOT begin with a UTF-8 BOM (`0xEF 0xBB 0xBF`).
+   - **Strings:** Enclosed in double quotes. Characters escaped per RFC 8259 Section 7. Unicode escape sequences use lowercase hex (`\u00e9`, not `\u00E9`). The following characters MUST be escaped: `"`, `\`, and control characters U+0000 through U+001F. Forward slash (`/`) MUST NOT be escaped.
+   - **Numbers:** Integers serialize without decimal point (`1`, not `1.0`). Floats serialize with minimal decimal digits (`149.99`, not `149.990`). No leading zeros (`0.5`, not `00.5`). No positive sign (`1`, not `+1`). Negative zero serializes as `0`. No `NaN` or `Infinity` — these are not valid JSON.
+   - **Booleans:** `true` or `false` (lowercase).
+   - **Null:** `null` (lowercase).
+   - **Arrays:** Preserve element order. Apply rules recursively to elements.
+4. Encode the resulting string as **UTF-8 bytes**. No null terminator.
 
 These bytes are the **signing input** and the **verification input**.
+
+### Cross-Language Implementation Notes
+
+The canonical serialization MUST produce identical bytes across all implementations. Common pitfalls:
+
+| Language | Pitfall | Correct behavior |
+|----------|---------|-----------------|
+| JavaScript | `JSON.stringify` does not sort keys | Sort explicitly before serialization |
+| Go | `encoding/json` does not sort map keys by default | Use sorted key iteration or `json.Marshal` on a struct with ordered fields |
+| Java | `ObjectMapper` may use insertion order | Configure `ORDER_MAP_ENTRIES_BY_KEYS` or use `TreeMap` |
+| Rust | `serde_json` preserves insertion order by default | Use `BTreeMap` or sort before serialization |
+| Python | `json.dumps` preserves insertion order since 3.7 | Use `sort_keys=True` and `separators=(',', ':')` |
+
+**Number serialization** is the most common source of interop failures. The reference SDK's `canonicalize()` function and the test vectors in [`/test-vectors/`](../test-vectors/) are the authoritative reference. When in doubt, match the reference SDK's byte output.
 
 ### Example
 
