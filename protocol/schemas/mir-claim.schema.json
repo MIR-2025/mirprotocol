@@ -14,32 +14,8 @@
     },
     "type": {
       "type": "string",
-      "description": "Claim type from the MIR type registry.",
-      "enum": [
-        "transaction.initiated",
-        "transaction.completed",
-        "transaction.fulfilled",
-        "transaction.cancelled",
-        "transaction.refunded",
-        "transaction.disputed",
-        "transaction.chargeback",
-        "account.created",
-        "account.updated",
-        "account.verified",
-        "account.suspended",
-        "account.closed",
-        "review.submitted",
-        "review.received",
-        "rating.received",
-        "message.sent",
-        "message.received",
-        "response.provided",
-        "policy.warning",
-        "policy.violation",
-        "terms.violation",
-        "signal.positive",
-        "signal.negative"
-      ]
+      "description": "Claim type. Core types use {category}.{action}. Extension types use {domain}:{category}.{action}.",
+      "pattern": "^([a-z][a-z0-9]*\\.[a-z][a-z0-9_]*|([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,}:[a-z][a-z0-9]*\\.[a-z][a-z0-9_]*)$"
     },
     "domain": {
       "type": "string",
@@ -48,7 +24,7 @@
     },
     "subject": {
       "type": "string",
-      "description": "SHA-256 hash of the participant identifier (hex-encoded, lowercase).",
+      "description": "SHA-256 or HMAC-SHA256 hash of the participant identifier (hex-encoded, lowercase).",
       "pattern": "^[a-f0-9]{64}$"
     },
     "timestamp": {
@@ -58,7 +34,7 @@
     },
     "metadata": {
       "type": "object",
-      "description": "Type-specific structured context. Maximum 4 KB serialized. Must not contain PII.",
+      "description": "Type-specific structured context. Maximum 4 KB serialized. Must not contain PII. SHOULD use integer values and string representations for decimals to avoid float ambiguity.",
       "additionalProperties": true
     },
     "keyFingerprint": {
@@ -68,8 +44,8 @@
     },
     "sig": {
       "type": "string",
-      "description": "Base64-encoded Ed25519 signature over the canonical form of the claim (all fields except sig).",
-      "pattern": "^[A-Za-z0-9+/]{86}==$"
+      "description": "Base64url-encoded (no padding) Ed25519 signature over the canonical form of the claim (all fields except sig).",
+      "pattern": "^[A-Za-z0-9_-]{86}$"
     }
   }
 }

@@ -6,5 +6,5 @@
  */
 
 export { canonicalize, canonicalString } from './serialize.js';
-export { createClaim, generateKeyPair, keyFingerprint, subjectHash, CLAIM_TYPES } from './sign.js';
-export { verifyClaim } from './verify.js';
+export { createClaim, generateKeyPair, keyFingerprint, subjectHash, subjectHashHmac, isValidClaimType, CORE_CLAIM_TYPES } from './sign.js';
+export { verifyClaim, ErrorCode } from './verify.js';

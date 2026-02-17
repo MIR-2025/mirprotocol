@@ -1,0 +1,12 @@
+{
+  "mir": 1,
+  "type": "review.submitted",
+  "domain": "reviews.example.com",
+  "subject": "0eb3ff67000dfdd03984eb897511e6325152b9bf9ab3fd6e57e186db228cd670",
+  "timestamp": "2025-06-01T12:00:00Z",
+  "keyFingerprint": "5db3093f6ea4f8549d15656fe0e48c1b54302f1e369cc690dd8c703ff30963f4",
+  "metadata": {
+    "verified_purchase": true
+  },
+  "sig": "uyJ0PzZVAcbPUWPqpezNsbRUEyi6aIXeHnZmcc1Wpg9iNIAFqPQ0sWQcGHgXc5jCl0HpooM2FV9uOVsmld2aBw"
+}

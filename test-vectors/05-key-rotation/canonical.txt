@@ -1,0 +1,1 @@
+{"domain":"platform.example.com","keyFingerprint":"1b97c62dd18f2451f02cf3f149afa537c212bcf7154ed6cd13b45ede8c089c67","mir":1,"subject":"890cc97f2e56b5251353bc1979b82508c1c0145ed79ef9b0a53a5f3bf80504d2","timestamp":"2026-02-10T08:00:00Z","type":"signal.positive"}

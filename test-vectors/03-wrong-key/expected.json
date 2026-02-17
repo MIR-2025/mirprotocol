@@ -1,0 +1,6 @@
+{
+  "result": "REJECT",
+  "code": "KEY_NOT_FOUND",
+  "verifyWith": "keyA",
+  "note": "Claim signed by keyB, verified against keyA. Fingerprint mismatch."
+}

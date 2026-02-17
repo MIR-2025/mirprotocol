@@ -13,10 +13,10 @@ _mir-key.{domain}
 ### Format
 
 ```
-mir-key={base64-encoded-public-key}
+mir-key={base64url-encoded-public-key}
 ```
 
-The value is the raw 32-byte Ed25519 public key, Base64-encoded (44 characters).
+The value is the raw 32-byte Ed25519 public key, base64url-encoded without padding (43 characters).
 
 ### Example
 
@@ -75,7 +75,7 @@ https://{domain}/.well-known/mir.json
 
 | Field | Required | Description |
 |-------|----------|-------------|
-| `pub` | yes | Base64-encoded 32-byte Ed25519 public key |
+| `pub` | yes | Base64url-encoded (no padding) 32-byte Ed25519 public key |
 | `fingerprint` | yes | SHA-256 hash of the raw public key bytes, hex-encoded |
 | `alg` | yes | Algorithm identifier. Must be `"Ed25519"` |
 | `created` | yes | ISO 8601 datetime when the key was created |

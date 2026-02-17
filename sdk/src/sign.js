@@ -4,13 +4,14 @@
  * Uses Node.js crypto (Ed25519) — no external dependencies.
  */
 
-import { createHash, sign, generateKeyPairSync } from 'node:crypto';
+import { createHash, createHmac, sign, generateKeyPairSync } from 'node:crypto';
 import { canonicalize } from './serialize.js';
 
 /**
- * Valid MIR claim types.
+ * Core MIR claim types (protocol-defined).
+ * Types without a colon prefix are reserved for the MIR protocol.
  */
-export const CLAIM_TYPES = [
+export const CORE_CLAIM_TYPES = [
   'transaction.initiated',
   'transaction.completed',
   'transaction.fulfilled',
@@ -37,6 +38,26 @@ export const CLAIM_TYPES = [
 ];
 
 /**
+ * Validate a claim type string.
+ * Core types: {category}.{action} (no colon)
+ * Extension types: {domain}:{category}.{action}
+ *
+ * @param {string} type
+ * @returns {boolean}
+ */
+export function isValidClaimType(type) {
+  // Core type: lowercase alpha + dots, at least one dot, no colon
+  if (/^[a-z][a-z0-9]*\.[a-z][a-z0-9_]*$/.test(type)) {
+    return true;
+  }
+  // Extension type: domain:category.action
+  if (/^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}:[a-z][a-z0-9]*\.[a-z][a-z0-9_]*$/.test(type)) {
+    return true;
+  }
+  return false;
+}
+
+/**
  * Generate an Ed25519 key pair for signing MIR claims.
  *
  * @returns {{ privateKey: import('node:crypto').KeyObject, publicKey: import('node:crypto').KeyObject, fingerprint: string }}
@@ -60,10 +81,11 @@ export function keyFingerprint(publicKey) {
 }
 
 /**
- * Compute a MIR subject hash.
+ * Compute a MIR subject hash (basic mode — SHA-256).
+ * For stronger privacy, use subjectHashHmac instead.
  *
  * @param {string} domain - The issuing domain.
- * @param {string} externalUserId - The platform-specific user ID.
+ * @param {string} externalUserId - The platform-specific user ID (MUST NOT be email/phone).
  * @returns {string} SHA-256 hex hash.
  */
 export function subjectHash(domain, externalUserId) {
@@ -71,12 +93,25 @@ export function subjectHash(domain, externalUserId) {
 }
 
 /**
+ * Compute a MIR subject hash (HMAC mode — recommended).
+ * Resistant to brute-force even if externalUserId format is known.
+ *
+ * @param {string} domain - The issuing domain.
+ * @param {string} externalUserId - The platform-specific user ID.
+ * @param {string | Buffer} domainSecret - Stable domain-specific secret (never published).
+ * @returns {string} HMAC-SHA256 hex hash.
+ */
+export function subjectHashHmac(domain, externalUserId, domainSecret) {
+  return createHmac('sha256', domainSecret).update(`${domain}:${externalUserId}`).digest('hex');
+}
+
+/**
  * Create and sign a MIR claim.
  *
  * @param {object} params
- * @param {string} params.type - Claim type (e.g., "transaction.completed").
+ * @param {string} params.type - Claim type (core or extension).
  * @param {string} params.domain - Issuing domain.
- * @param {string} params.subject - SHA-256 subject hash.
+ * @param {string} params.subject - Subject hash (64-char lowercase hex).
  * @param {string} params.timestamp - ISO 8601 timestamp.
  * @param {object} [params.metadata] - Optional metadata.
  * @param {import('node:crypto').KeyObject} params.privateKey - Ed25519 private key.
@@ -84,12 +119,12 @@ export function subjectHash(domain, externalUserId) {
  * @returns {object} The signed MIR claim.
  */
 export function createClaim({ type, domain, subject, timestamp, metadata, privateKey, keyFingerprint: kf }) {
-  if (!CLAIM_TYPES.includes(type)) {
-    throw new Error(`Unknown claim type: "${type}"`);
+  if (!isValidClaimType(type)) {
+    throw new Error(`Invalid claim type: "${type}". Must be {category}.{action} or {domain}:{category}.{action}`);
   }
 
   if (!/^[a-f0-9]{64}$/.test(subject)) {
-    throw new Error('Subject must be a 64-character lowercase hex string (SHA-256 hash).');
+    throw new Error('Subject must be a 64-character lowercase hex string (SHA-256 or HMAC-SHA256 hash).');
   }
 
   if (!/^[a-f0-9]{64}$/.test(kf)) {
@@ -112,7 +147,7 @@ export function createClaim({ type, domain, subject, timestamp, metadata, privat
   const bytes = canonicalize(claim);
   const signature = sign(null, bytes, privateKey);
 
-  claim.sig = signature.toString('base64');
+  claim.sig = signature.toString('base64url');
 
   return claim;
 }

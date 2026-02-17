@@ -29,33 +29,58 @@ MIR is the participation layer your identity stack reads from. It doesn't replac
 - **Non-evaluative.** MIR proves who signed a claim. It does not judge whether the claim is true.
 - **Privacy-preserving.** Subject identifiers are domain-scoped SHA-256 hashes. No PII enters the protocol.
 
+## Registry Is Optional
+
+A MIR registry stores and indexes claims for convenience. It is **not** a trust anchor. It cannot forge, modify, or invalidate claims — signatures are verified against the domain's public key, not the registry's word.
+
+You can verify any MIR claim with nothing more than the claim JSON and the signer's public key (fetched from the domain's DNS TXT record or `.well-known/mir.json`). No registry call required. No API key. No account.
+
+Registries add value by aggregating claims for lookup and providing availability, but they are architecturally replaceable. See [07-Registry Role](protocol/07-registry-role.md).
+
+## How to Implement
+
+| Step | What to do | Reference |
+|------|-----------|-----------|
+| 1 | Understand the claim structure | [03-Claim Format](protocol/03-claim-format.md) |
+| 2 | Generate Ed25519 keys and publish via DNS or `.well-known` | [05-Domain Key Discovery](protocol/05-domain-key-discovery.md) |
+| 3 | Implement canonical serialization (sort keys, exclude `sig`, compact JSON, UTF-8) | [04-Signature Model](protocol/04-signature-model.md) |
+| 4 | Sign claims and produce base64url signatures | [04-Signature Model](protocol/04-signature-model.md) |
+| 5 | Implement the verification algorithm | [06-Verification Process](protocol/06-verification-process.md) |
+| 6 | Validate against the authoritative test vectors | [test-vectors/](test-vectors/) |
+| 7 | Check conformance requirements | [11-Conformance](protocol/11-conformance.md) |
+
+The [reference SDK](sdk/) (JavaScript, zero dependencies) demonstrates all steps. Run `cd sdk && npm install && npm test` to see 30 tests pass.
+
 ## Specification
 
 | # | Document | Description |
 |---|----------|-------------|
 | 01 | [Overview](protocol/01-overview.md) | Architecture, properties, scope |
 | 02 | [Terminology](protocol/02-terminology.md) | Defined terms |
-| 03 | [Claim Format](protocol/03-claim-format.md) | Claim structure, fields, types |
-| 04 | [Signature Model](protocol/04-signature-model.md) | Canonical serialization, Ed25519 |
-| 05 | [Domain Key Discovery](protocol/05-domain-key-discovery.md) | DNS TXT, `.well-known/mir.json` |
-| 06 | [Verification Process](protocol/06-verification-process.md) | Deterministic verification algorithm |
+| 03 | [Claim Format](protocol/03-claim-format.md) | Claim structure, fields, types, encoding |
+| 04 | [Signature Model](protocol/04-signature-model.md) | Canonical serialization, Ed25519, number handling |
+| 05 | [Domain Key Discovery](protocol/05-domain-key-discovery.md) | DNS TXT, `.well-known/mir.json`, key lifecycle |
+| 06 | [Verification Process](protocol/06-verification-process.md) | Deterministic verification algorithm, error codes |
 | 07 | [Registry Role](protocol/07-registry-role.md) | What registries do and do not provide |
 | 08 | [Security Considerations](protocol/08-security-considerations.md) | Cryptographic and operational security |
 | 09 | [Threat Model](protocol/09-threat-model.md) | Attack surface and mitigations |
 | 10 | [Non-Goals](protocol/10-non-goals.md) | Explicit exclusions |
+| 11 | [Conformance](protocol/11-conformance.md) | MUST/SHOULD checklist and error codes |
 
 ## Conformance
 
-This specification uses RFC 2119 keywords (MUST, SHOULD, MAY) throughout the protocol documents.
+This specification uses RFC 2119 keywords (MUST, SHOULD, MAY) throughout the protocol documents. Full conformance requirements are in [11-Conformance](protocol/11-conformance.md).
 
 A conformant **signer** MUST:
 - Produce claims matching [mir-claim.schema.json](protocol/schemas/mir-claim.schema.json).
 - Serialize the signing input using the [canonical serialization rules](protocol/04-signature-model.md#canonical-serialization).
 - Sign with Ed25519 per [RFC 8032](https://datatracker.ietf.org/doc/html/rfc8032).
+- Encode signatures and public keys as base64url without padding ([RFC 4648 §5](https://datatracker.ietf.org/doc/html/rfc4648#section-5)).
 - Publish at least one public key via [DNS TXT or `.well-known/mir.json`](protocol/05-domain-key-discovery.md).
 
 A conformant **verifier** MUST:
 - Implement the [deterministic verification algorithm](protocol/06-verification-process.md#algorithm).
+- Return standard [error codes](protocol/11-conformance.md#error-codes) on rejection.
 - Reject claims with missing required fields, invalid formats, or failed signatures.
 - Discover keys via `.well-known` with DNS fallback.
 
@@ -64,7 +89,20 @@ A conformant **registry** MUST:
 - Never modify claims after ingestion.
 - Never require authentication for read/verify operations.
 
-See [test-vectors/](test-vectors/) for known-good and known-bad claims to validate your implementation.
+## Test Vectors
+
+Six [authoritative test vectors](test-vectors/) with real Ed25519 signatures:
+
+| # | Scenario | Expected |
+|---|----------|----------|
+| 01 | Valid claim | ACCEPT |
+| 02 | Tampered payload (`.com` → `.con`) | REJECT — `INVALID_SIGNATURE` |
+| 03 | Wrong key (fingerprint mismatch) | REJECT — `KEY_NOT_FOUND` |
+| 04 | Expired key (valid signature) | ACCEPT (policy may reject) |
+| 05 | Key rotation | ACCEPT under new key, REJECT under old |
+| 06 | Canonicalization trap (unsorted keys) | ACCEPT |
+
+See [test-vectors/README.md](test-vectors/README.md) for file format and usage.
 
 ## Schema
 
@@ -82,7 +120,7 @@ sdk/
 │   ├── verify.js       # Signature verification
 │   └── index.js        # Public API
 ├── test/
-│   └── mir.test.js     # Test suite
+│   └── mir.test.js     # Test suite (30 tests)
 └── package.json
 ```
 
@@ -101,16 +139,18 @@ mirprotocol.net/
 ├── protocol/                # Specification documents
 │   ├── 01-overview.md
 │   ├── ...
-│   ├── 10-non-goals.md
+│   ├── 11-conformance.md
 │   └── schemas/
 │       └── mir-claim.schema.json
-├── test-vectors/            # Interop test vectors
+├── test-vectors/            # Authoritative interop test vectors
 │   ├── README.md
-│   ├── valid-claim.json
-│   ├── tampered-claim.json
-│   ├── wrong-key-claim.json
-│   ├── expired-key-claim.json
-│   └── keys.json
+│   ├── keys.json
+│   ├── 01-valid-claim/
+│   ├── 02-tampered-payload/
+│   ├── 03-wrong-key/
+│   ├── 04-expired-key/
+│   ├── 05-key-rotation/
+│   └── 06-canonicalization-trap/
 └── sdk/                     # Reference implementation (JavaScript)
     ├── src/
     ├── test/

@@ -1,0 +1,1 @@
+{"domain":"reviews.example.com","keyFingerprint":"5db3093f6ea4f8549d15656fe0e48c1b54302f1e369cc690dd8c703ff30963f4","metadata":{"verified_purchase":true},"mir":1,"subject":"0eb3ff67000dfdd03984eb897511e6325152b9bf9ab3fd6e57e186db228cd670","timestamp":"2025-06-01T12:00:00Z","type":"review.submitted"}

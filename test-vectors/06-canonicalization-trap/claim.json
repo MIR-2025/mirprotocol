@@ -1,0 +1,13 @@
+{
+  "timestamp": "2026-03-01T00:00:00Z",
+  "domain": "trap.example.com",
+  "mir": 1,
+  "subject": "9839ca53220dd639f06957bfa10c2507d7d1944d82fb403e23f10d21ec86647e",
+  "metadata": {
+    "zebra": 1,
+    "alpha": 2
+  },
+  "type": "account.verified",
+  "keyFingerprint": "5db3093f6ea4f8549d15656fe0e48c1b54302f1e369cc690dd8c703ff30963f4",
+  "sig": "TSeflg6fec8HUOgPk7vMjf_N3EzQp4CudOXdwBv2zGdor-D4bLHX8ab-5ZvRGlnV2MpZyQuDFWKh3SnUOatGDQ"
+}

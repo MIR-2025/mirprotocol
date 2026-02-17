@@ -1,0 +1,13 @@
+{
+  "mir": 1,
+  "type": "transaction.completed",
+  "domain": "marketplace.example.con",
+  "subject": "ea3eeb449dc86b1a3f7fe8567c939b0da26437ecce5e6a7a1f275d2b07ada6d9",
+  "timestamp": "2026-02-16T15:30:00Z",
+  "keyFingerprint": "5db3093f6ea4f8549d15656fe0e48c1b54302f1e369cc690dd8c703ff30963f4",
+  "metadata": {
+    "currency": "USD",
+    "count": 1
+  },
+  "sig": "ByLjpCGuDeUNZdWdgiHHEmF7-jtC39ZmEom_JEYCJFBxCyFDjE2QZCBhChTLXI3TJXheHRMxOOfDD7j0Ox8LAg"
+}

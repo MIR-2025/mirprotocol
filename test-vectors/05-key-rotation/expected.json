@@ -1,0 +1,11 @@
+{
+  "verifyWith_keyB": {
+    "result": "ACCEPT",
+    "code": null
+  },
+  "verifyWith_keyA": {
+    "result": "REJECT",
+    "code": "KEY_NOT_FOUND"
+  },
+  "note": "Signed by keyB (new key). Valid under keyB. Fails against keyA (old key) because fingerprint does not match."
+}

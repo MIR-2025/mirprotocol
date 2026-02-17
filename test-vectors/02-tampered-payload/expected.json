@@ -1,0 +1,6 @@
+{
+  "result": "REJECT",
+  "code": "INVALID_SIGNATURE",
+  "verifyWith": "keyA",
+  "note": "domain changed from .com to .con after signing"
+}

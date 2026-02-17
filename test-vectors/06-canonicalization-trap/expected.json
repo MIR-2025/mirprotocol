@@ -1,0 +1,6 @@
+{
+  "result": "ACCEPT",
+  "code": null,
+  "verifyWith": "keyA",
+  "note": "JSON keys are deliberately unsorted. Canonical serialization must sort before verifying. metadata.zebra appears before metadata.alpha in the claim JSON but must sort to alpha < zebra in canonical form."
+}

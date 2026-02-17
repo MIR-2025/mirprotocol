@@ -1,0 +1,6 @@
+{
+  "result": "ACCEPT",
+  "code": null,
+  "verifyWith": "keyA_expired",
+  "note": "Signature is valid. Key expires 2025-12-31. Verifier policy may reject via KEY_EXPIRED."
+}

@@ -1,0 +1,1 @@
+{"domain":"marketplace.example.con","keyFingerprint":"5db3093f6ea4f8549d15656fe0e48c1b54302f1e369cc690dd8c703ff30963f4","metadata":{"count":1,"currency":"USD"},"mir":1,"subject":"ea3eeb449dc86b1a3f7fe8567c939b0da26437ecce5e6a7a1f275d2b07ada6d9","timestamp":"2026-02-16T15:30:00Z","type":"transaction.completed"}
