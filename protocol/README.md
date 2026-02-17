@@ -14,7 +14,7 @@ MIR is a neutral, non-scoring continuity layer for digital participation. It def
 
 ## Why MIR Exists
 
-In distributed systems — especially identity and AI-driven ecosystems — context disappears. Claims become ephemeral. Participation becomes untraceable. Provenance becomes disputable.
+In distributed systems — especially identity and AI-driven ecosystems — context disappears. Claims become ephemeral. Participation becomes untraceable.
 
 MIR introduces a portable memory primitive: a structured record of participation, submitted by registered partner organizations and anchored to time.
 
