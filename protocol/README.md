@@ -16,7 +16,7 @@ MIR is a neutral, non-scoring continuity layer for digital participation. It def
 
 In distributed systems — especially identity and AI-driven ecosystems — context disappears. Claims become ephemeral. Participation becomes untraceable. Provenance becomes disputable.
 
-MIR introduces a portable memory primitive: a structured, verifiable claim anchored to domain authority and time.
+MIR introduces a portable memory primitive: a structured record of participation, submitted by registered partner organizations and anchored to time.
 
 ## What MIR Is
 
