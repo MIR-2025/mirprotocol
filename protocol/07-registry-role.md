@@ -100,7 +100,7 @@ The same claim (identical `sig`) submitted multiple times MUST be stored only on
 
 There are no conflicts to resolve. Claims are append-only. Two claims from the same domain about the same subject at the same time are both valid — they are two separate signed assertions. The registry stores both.
 
-If a domain issues a correction (e.g., `transaction.refunded` after `transaction.completed`), both claims exist in the registry. Verifiers interpret the sequence; the registry does not.
+If a domain issues a correction (e.g., `mir.transaction.refunded` after `mir.transaction.completed`), both claims exist in the registry. Verifiers interpret the sequence; the registry does not.
 
 ## Relationship to Domains
 

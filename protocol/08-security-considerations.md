@@ -70,7 +70,7 @@ A MIR claim is an assertion of historical fact, not a bearer token. Presenting a
 
 ### Why Claims Have No Expiry
 
-Claims do not expire. A `transaction.completed` from 2024 is still a valid assertion in 2030. The signature proves authorship and integrity regardless of age. Expiry would destroy the continuity property that MIR exists to provide.
+Claims do not expire. A `mir.transaction.completed` from 2024 is still a valid assertion in 2030. The signature proves authorship and integrity regardless of age. Expiry would destroy the continuity property that MIR exists to provide.
 
 ### Freshness Is a Verifier Concern
 

@@ -24,7 +24,7 @@ Given a valid MIR claim, any verifier can independently confirm:
 
 - **Truthfulness.** A domain can sign a false claim. MIR proves authorship, not accuracy.
 - **Identity.** The subject hash is pseudonymous. MIR does not identify real-world individuals.
-- **Current status.** A `transaction.completed` claim does not mean the transaction was not later refunded.
+- **Current status.** A `mir.transaction.completed` claim does not mean the transaction was not later refunded.
 
 ## Architecture
 

@@ -126,9 +126,11 @@ HMAC derivation prevents brute-force reversal even when the user ID format is kn
 
 ### Core Types (Protocol-Defined)
 
-All core types use the `mir.` namespace prefix to prevent collisions with external taxonomies. Types without a colon are reserved for the MIR protocol. New core types are added through protocol versioning.
+All core types use the `mir.` namespace prefix to prevent collisions with external taxonomies. The `mir.` prefix is reserved for protocol-defined types. New core types are added through protocol versioning.
 
-#### Transaction (`cross_system`)
+The following types are defined by the protocol. They record structural participation events — not scores, ratings, or evaluations.
+
+#### Transaction
 
 | Type | Description |
 |------|-------------|
@@ -140,25 +142,24 @@ All core types use the `mir.` namespace prefix to prevent collisions with extern
 | `mir.transaction.disputed` | Transaction under dispute |
 | `mir.transaction.chargeback` | Chargeback filed |
 
-#### Account (`intra_system` / `privileged`)
+#### Account
 
-| Type | Boundary | Description |
-|------|----------|-------------|
-| `mir.account.created` | `intra_system` | Account created |
-| `mir.account.updated` | `intra_system` | Account modified |
-| `mir.account.verified` | `privileged` | Identity verified by platform |
-| `mir.account.suspended` | `privileged` | Account suspended |
-| `mir.account.closed` | `intra_system` | Account closed |
+| Type | Description |
+|------|-------------|
+| `mir.account.created` | Account created |
+| `mir.account.updated` | Account modified |
+| `mir.account.verified` | Identity verified by platform |
+| `mir.account.suspended` | Account suspended |
+| `mir.account.closed` | Account closed |
 
-#### Review (`intra_system`)
+#### Review
 
 | Type | Description |
 |------|-------------|
 | `mir.review.submitted` | Subject submitted a review |
 | `mir.review.received` | Subject received a review |
-| `mir.rating.received` | Subject received a rating |
 
-#### Communication (`intra_system`)
+#### Communication
 
 | Type | Description |
 |------|-------------|
@@ -166,20 +167,13 @@ All core types use the `mir.` namespace prefix to prevent collisions with extern
 | `mir.message.received` | Message received |
 | `mir.response.provided` | Response to inquiry |
 
-#### Policy (`privileged`)
+#### Policy
 
 | Type | Description |
 |------|-------------|
 | `mir.policy.warning` | Policy warning issued |
 | `mir.policy.violation` | Policy violation recorded |
 | `mir.terms.violation` | Terms of service violated |
-
-#### Signal (`intra_system`)
-
-| Type | Description |
-|------|-------------|
-| `mir.signal.positive` | General positive signal |
-| `mir.signal.negative` | General negative signal |
 
 ### Type Extensibility
 
@@ -203,4 +197,4 @@ bank.example.com:kyc.completed
 
 ## Immutability
 
-Claims are append-only. A signed claim cannot be modified — the signature would invalidate. Corrections are expressed as new claims (e.g., `transaction.refunded` follows `transaction.completed`).
+Claims are append-only. A signed claim cannot be modified — the signature would invalidate. Corrections are expressed as new claims (e.g., `mir.transaction.refunded` follows `mir.transaction.completed`).

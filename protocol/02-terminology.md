@@ -10,11 +10,11 @@ The DNS domain of the organization issuing a claim (e.g., `marketplace.example.c
 
 ## Subject
 
-A pseudonymous identifier for the participant referenced in a claim. Always a SHA-256 hash of `{domain}:{externalUserId}`. The same real-world person has different subject hashes on different domains by design.
+A pseudonymous identifier for the participant referenced in a claim. Derived as SHA-256 or HMAC-SHA256 of `{domain}:{externalUserId}`. The same real-world person has different subject hashes on different domains by design.
 
 ## Claim Type
 
-A dot-notation string identifying the kind of event (e.g., `transaction.completed`, `account.verified`). Types are drawn from the MIR type registry.
+A namespaced string identifying the kind of event. Core types use the `mir.` prefix (e.g., `mir.transaction.completed`, `mir.account.verified`). Extension types use a domain prefix with colon (e.g., `shopify.com:loyalty.earned`). Types are validated by format, not by a central registry.
 
 ## Signing Key
 
@@ -34,7 +34,7 @@ The deterministic JSON serialization of a claim's payload (excluding the `sig` f
 
 ## Signature
 
-An Ed25519 signature over the canonical form of the claim payload. Base64-encoded in the claim document. 64 bytes when decoded.
+An Ed25519 signature over the canonical form of the claim payload. Base64url-encoded (no padding) in the claim document. 64 bytes when decoded (86 characters encoded).
 
 ## Registry
 

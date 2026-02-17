@@ -201,7 +201,7 @@ const subjectTrap = createHash('sha256').update('trap.example.com:user_trap').di
 {
   const claim = {
     mir: 1,
-    type: 'mir.signal.positive',
+    type: 'mir.account.updated',
     domain: 'platform.example.com',
     subject: subjectPlatform,
     timestamp: '2026-02-10T08:00:00Z',

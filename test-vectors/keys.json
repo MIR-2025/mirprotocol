@@ -1,21 +1,21 @@
 {
   "keyA": {
-    "pub": "0Wg3GAAEuz87O-SWfrxNrhDtk8TaIM51Ehdqe0rJPoU",
-    "fingerprint": "4516b32d57c1933d7c8a6427e590b29ef9115db03937881d2d42842a111d0cdc",
+    "pub": "HET0whGEgY4PZZibev1RPTdGX2H4Ahf0GD3izPbMFH0",
+    "fingerprint": "09bd4e2dee73a9baa55fc3ff0826f954c43a9fd835e357ada06980e2c64661e9",
     "alg": "Ed25519",
     "created": "2026-01-01T00:00:00Z",
     "expires": null
   },
   "keyB": {
-    "pub": "X8Gnz55gtv5n2IF0-BDK_--OCWA1FPaFM6jHNG2vv9Y",
-    "fingerprint": "a481f7614bae592371c91555e2835a53dc73d7e3253753d6e8b7fad72e202719",
+    "pub": "6SiKpP6Y3G-spknZwBrEBgi-utfEfWP2HcuWrZ-jm20",
+    "fingerprint": "b5974492d705c29529ed5b9cf6752fbef638c12e47aaff823713ef13ec91e3c6",
     "alg": "Ed25519",
     "created": "2026-02-01T00:00:00Z",
     "expires": null
   },
   "keyA_expired": {
-    "pub": "0Wg3GAAEuz87O-SWfrxNrhDtk8TaIM51Ehdqe0rJPoU",
-    "fingerprint": "4516b32d57c1933d7c8a6427e590b29ef9115db03937881d2d42842a111d0cdc",
+    "pub": "HET0whGEgY4PZZibev1RPTdGX2H4Ahf0GD3izPbMFH0",
+    "fingerprint": "09bd4e2dee73a9baa55fc3ff0826f954c43a9fd835e357ada06980e2c64661e9",
     "alg": "Ed25519",
     "created": "2025-01-01T00:00:00Z",
     "expires": "2025-12-31T23:59:59Z"

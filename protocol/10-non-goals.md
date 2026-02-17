@@ -20,7 +20,7 @@ MIR does not model, predict, or profile user behavior. Claim data is structured 
 
 ## Content Evaluation
 
-MIR does not assess the quality, accuracy, or nature of events referenced in claims. A `review.submitted` claim means the domain attests a review was submitted. MIR does not evaluate the review itself.
+MIR does not assess the quality, accuracy, or nature of events referenced in claims. A `mir.review.submitted` claim means the domain attests a review was submitted. MIR does not evaluate the review itself.
 
 ## Surveillance
 

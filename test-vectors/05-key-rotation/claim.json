@@ -1,9 +1,9 @@
 {
   "mir": 1,
-  "type": "mir.signal.positive",
+  "type": "mir.account.updated",
   "domain": "platform.example.com",
   "subject": "b17cddf45fd217c347f5263b45567e7d4febe36b74dfd9a7b2fa12836b703e44",
   "timestamp": "2026-02-10T08:00:00Z",
-  "keyFingerprint": "a481f7614bae592371c91555e2835a53dc73d7e3253753d6e8b7fad72e202719",
-  "sig": "lmzobZuFIjmvrAyuo-OurxmgU7VeaK9euvTgAUrGKfVODnT8FH2FM6njVVwsfTGux1jMZ3BGLQynV6IczL3HBw"
+  "keyFingerprint": "b5974492d705c29529ed5b9cf6752fbef638c12e47aaff823713ef13ec91e3c6",
+  "sig": "SRBtg3rC7zsWTXtV5hgoN8IbKQ2oxe2Gvfp52O7VeUq1tutcZJTcWu4aeOx2wLGvN0u56qFCdnptmux1oP8hAA"
 }
