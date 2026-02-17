@@ -7,7 +7,7 @@ A MIR claim is a signed JSON document. It is the fundamental unit of the protoco
 ```json
 {
   "mir": 1,
-  "type": "transaction.completed",
+  "type": "mir.transaction.completed",
   "domain": "marketplace.example.com",
   "subject": "a55bea0a6788794ef1307951f98bc339db7ccf9309881180e9e6c080f63ae618",
   "timestamp": "2026-02-16T15:30:00Z",
@@ -44,7 +44,7 @@ This applies to the `sig` field in claims and the `pub` field in `.well-known/mi
 
 - **Type:** string
 - Claim type. See [Claim Types](#claim-types) and [Type Extensibility](#type-extensibility) below.
-- Core types use dot-notation: `{category}.{action}` (e.g., `transaction.completed`).
+- Core types use the `mir.` namespace: `mir.{category}.{action}` (e.g., `mir.transaction.completed`).
 - Extension types use domain-scoped prefix: `{domain}:{category}.{action}` (e.g., `shopify.com:loyalty.earned`).
 
 ### `domain` (required)
@@ -126,60 +126,60 @@ HMAC derivation prevents brute-force reversal even when the user ID format is kn
 
 ### Core Types (Protocol-Defined)
 
-Types without a colon prefix are reserved for the MIR protocol. New core types are added through protocol versioning.
+All core types use the `mir.` namespace prefix to prevent collisions with external taxonomies. Types without a colon are reserved for the MIR protocol. New core types are added through protocol versioning.
 
 #### Transaction (`cross_system`)
 
 | Type | Description |
 |------|-------------|
-| `transaction.initiated` | Transaction started |
-| `transaction.completed` | Transaction completed |
-| `transaction.fulfilled` | Goods or services delivered |
-| `transaction.cancelled` | Transaction cancelled |
-| `transaction.refunded` | Transaction refunded |
-| `transaction.disputed` | Transaction under dispute |
-| `transaction.chargeback` | Chargeback filed |
+| `mir.transaction.initiated` | Transaction started |
+| `mir.transaction.completed` | Transaction completed |
+| `mir.transaction.fulfilled` | Goods or services delivered |
+| `mir.transaction.cancelled` | Transaction cancelled |
+| `mir.transaction.refunded` | Transaction refunded |
+| `mir.transaction.disputed` | Transaction under dispute |
+| `mir.transaction.chargeback` | Chargeback filed |
 
 #### Account (`intra_system` / `privileged`)
 
 | Type | Boundary | Description |
 |------|----------|-------------|
-| `account.created` | `intra_system` | Account created |
-| `account.updated` | `intra_system` | Account modified |
-| `account.verified` | `privileged` | Identity verified by platform |
-| `account.suspended` | `privileged` | Account suspended |
-| `account.closed` | `intra_system` | Account closed |
+| `mir.account.created` | `intra_system` | Account created |
+| `mir.account.updated` | `intra_system` | Account modified |
+| `mir.account.verified` | `privileged` | Identity verified by platform |
+| `mir.account.suspended` | `privileged` | Account suspended |
+| `mir.account.closed` | `intra_system` | Account closed |
 
 #### Review (`intra_system`)
 
 | Type | Description |
 |------|-------------|
-| `review.submitted` | Subject submitted a review |
-| `review.received` | Subject received a review |
-| `rating.received` | Subject received a rating |
+| `mir.review.submitted` | Subject submitted a review |
+| `mir.review.received` | Subject received a review |
+| `mir.rating.received` | Subject received a rating |
 
 #### Communication (`intra_system`)
 
 | Type | Description |
 |------|-------------|
-| `message.sent` | Message sent |
-| `message.received` | Message received |
-| `response.provided` | Response to inquiry |
+| `mir.message.sent` | Message sent |
+| `mir.message.received` | Message received |
+| `mir.response.provided` | Response to inquiry |
 
 #### Policy (`privileged`)
 
 | Type | Description |
 |------|-------------|
-| `policy.warning` | Policy warning issued |
-| `policy.violation` | Policy violation recorded |
-| `terms.violation` | Terms of service violated |
+| `mir.policy.warning` | Policy warning issued |
+| `mir.policy.violation` | Policy violation recorded |
+| `mir.terms.violation` | Terms of service violated |
 
 #### Signal (`intra_system`)
 
 | Type | Description |
 |------|-------------|
-| `signal.positive` | General positive signal |
-| `signal.negative` | General negative signal |
+| `mir.signal.positive` | General positive signal |
+| `mir.signal.negative` | General negative signal |
 
 ### Type Extensibility
 
@@ -197,7 +197,7 @@ bank.example.com:kyc.completed
 
 - The domain prefix MUST be a valid DNS hostname.
 - The `{category}.{action}` suffix follows the same format as core types: lowercase alphanumeric, dot-separated.
-- Types without a colon are **reserved** for the MIR protocol. Implementations MUST NOT create non-colon types outside of protocol versions.
+- Types starting with `mir.` are **reserved** for the MIR protocol. Implementations MUST NOT create `mir.`-prefixed types outside of protocol versions.
 - Extension types are validated by format only. No central registry of extension types exists.
 - Verifiers that do not recognize an extension type SHOULD still verify the claim's signature. Type recognition is independent of signature validity.
 

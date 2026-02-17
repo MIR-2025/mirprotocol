@@ -74,9 +74,9 @@ describe('MIR Protocol SDK', () => {
 
   describe('Claim type validation', () => {
     it('accepts core types', () => {
-      assert.ok(isValidClaimType('transaction.completed'));
-      assert.ok(isValidClaimType('account.verified'));
-      assert.ok(isValidClaimType('signal.positive'));
+      assert.ok(isValidClaimType('mir.transaction.completed'));
+      assert.ok(isValidClaimType('mir.account.verified'));
+      assert.ok(isValidClaimType('mir.signal.positive'));
     });
 
     it('accepts extension types with domain prefix', () => {
@@ -90,12 +90,15 @@ describe('MIR Protocol SDK', () => {
       assert.ok(!isValidClaimType('UPPER.case'));
       assert.ok(!isValidClaimType('.leading.dot'));
       assert.ok(!isValidClaimType('trailing.'));
+      // Bare category.action without mir. prefix is not valid
+      assert.ok(!isValidClaimType('transaction.completed'));
+      assert.ok(!isValidClaimType('account.verified'));
     });
   });
 
   describe('Canonical serialization', () => {
     it('sorts keys lexicographically', () => {
-      const claim = { mir: 1, type: 'account.created', domain: 'a.com', subject: 'a'.repeat(64), timestamp: '2026-01-01T00:00:00Z', keyFingerprint: 'b'.repeat(64) };
+      const claim = { mir: 1, type: 'mir.account.created', domain: 'a.com', subject: 'a'.repeat(64), timestamp: '2026-01-01T00:00:00Z', keyFingerprint: 'b'.repeat(64) };
       const str = canonicalString(claim);
       const keys = [...str.matchAll(/"([^"]+)":/g)].map(m => m[1]);
       const sorted = [...keys].sort();
@@ -103,7 +106,7 @@ describe('MIR Protocol SDK', () => {
     });
 
     it('excludes sig field', () => {
-      const claim = { mir: 1, sig: 'should-be-excluded', type: 'account.created' };
+      const claim = { mir: 1, sig: 'should-be-excluded', type: 'mir.account.created' };
       const str = canonicalString(claim);
       assert.ok(!str.includes('sig'));
     });
@@ -121,8 +124,8 @@ describe('MIR Protocol SDK', () => {
     });
 
     it('produces identical bytes for different key ordering', () => {
-      const a = { mir: 1, type: 'account.created', domain: 'a.com' };
-      const b = { domain: 'a.com', mir: 1, type: 'account.created' };
+      const a = { mir: 1, type: 'mir.account.created', domain: 'a.com' };
+      const b = { domain: 'a.com', mir: 1, type: 'mir.account.created' };
       assert.equal(canonicalString(a), canonicalString(b));
     });
   });
@@ -131,7 +134,7 @@ describe('MIR Protocol SDK', () => {
     it('creates a valid signed claim with base64url encoding', () => {
       const keys = generateKeyPair();
       const claim = createClaim({
-        type: 'transaction.completed',
+        type: 'mir.transaction.completed',
         domain: 'marketplace.example.com',
         subject: subjectHash('marketplace.example.com', 'user_42'),
         timestamp: '2026-02-16T15:30:00Z',
@@ -141,7 +144,7 @@ describe('MIR Protocol SDK', () => {
       });
 
       assert.equal(claim.mir, 1);
-      assert.equal(claim.type, 'transaction.completed');
+      assert.equal(claim.type, 'mir.transaction.completed');
       assert.equal(claim.domain, 'marketplace.example.com');
       assert.equal(claim.keyFingerprint, keys.fingerprint);
       assert.ok(claim.sig);
@@ -182,7 +185,7 @@ describe('MIR Protocol SDK', () => {
       const keys = generateKeyPair();
       assert.throws(() => {
         createClaim({
-          type: 'account.created',
+          type: 'mir.account.created',
           domain: 'example.com',
           subject: 'not-a-hash',
           timestamp: '2026-01-01T00:00:00Z',
@@ -195,7 +198,7 @@ describe('MIR Protocol SDK', () => {
     it('creates claims without metadata', () => {
       const keys = generateKeyPair();
       const claim = createClaim({
-        type: 'account.created',
+        type: 'mir.account.created',
         domain: 'example.com',
         subject: 'a'.repeat(64),
         timestamp: '2026-01-01T00:00:00Z',
@@ -212,7 +215,7 @@ describe('MIR Protocol SDK', () => {
     it('accepts a valid claim', () => {
       const keys = generateKeyPair();
       const claim = createClaim({
-        type: 'transaction.completed',
+        type: 'mir.transaction.completed',
         domain: 'marketplace.example.com',
         subject: subjectHash('marketplace.example.com', 'user_42'),
         timestamp: '2026-02-16T15:30:00Z',
@@ -229,7 +232,7 @@ describe('MIR Protocol SDK', () => {
     it('rejects a tampered claim with INVALID_SIGNATURE', () => {
       const keys = generateKeyPair();
       const claim = createClaim({
-        type: 'transaction.completed',
+        type: 'mir.transaction.completed',
         domain: 'marketplace.example.com',
         subject: subjectHash('marketplace.example.com', 'user_42'),
         timestamp: '2026-02-16T15:30:00Z',
@@ -237,7 +240,7 @@ describe('MIR Protocol SDK', () => {
         keyFingerprint: keys.fingerprint,
       });
 
-      claim.type = 'transaction.refunded';
+      claim.type = 'mir.transaction.refunded';
       const result = verifyClaim(claim, keys.publicKey);
       assert.equal(result.valid, false);
       assert.equal(result.code, ErrorCode.INVALID_SIGNATURE);
@@ -247,7 +250,7 @@ describe('MIR Protocol SDK', () => {
       const keys1 = generateKeyPair();
       const keys2 = generateKeyPair();
       const claim = createClaim({
-        type: 'account.created',
+        type: 'mir.account.created',
         domain: 'example.com',
         subject: 'a'.repeat(64),
         timestamp: '2026-01-01T00:00:00Z',
@@ -262,7 +265,7 @@ describe('MIR Protocol SDK', () => {
 
     it('rejects missing fields with INVALID_SCHEMA', () => {
       const keys = generateKeyPair();
-      const result = verifyClaim({ mir: 1, type: 'account.created' }, keys.publicKey);
+      const result = verifyClaim({ mir: 1, type: 'mir.account.created' }, keys.publicKey);
       assert.equal(result.valid, false);
       assert.equal(result.code, ErrorCode.INVALID_SCHEMA);
     });
@@ -270,7 +273,7 @@ describe('MIR Protocol SDK', () => {
     it('rejects unsupported protocol version', () => {
       const keys = generateKeyPair();
       const claim = createClaim({
-        type: 'account.created',
+        type: 'mir.account.created',
         domain: 'example.com',
         subject: 'a'.repeat(64),
         timestamp: '2026-01-01T00:00:00Z',
@@ -289,7 +292,7 @@ describe('MIR Protocol SDK', () => {
       const keys2 = generateKeyPair();
 
       const claim = createClaim({
-        type: 'account.created',
+        type: 'mir.account.created',
         domain: 'example.com',
         subject: 'a'.repeat(64),
         timestamp: '2026-01-01T00:00:00Z',

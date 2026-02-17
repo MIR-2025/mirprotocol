@@ -7,7 +7,7 @@ This document specifies conformance requirements for MIR protocol implementation
 A conformant signer (claim creator) MUST:
 
 - [ ] Set `mir` to `1`.
-- [ ] Set `type` to a valid claim type: core (`{category}.{action}`) or extension (`{domain}:{category}.{action}`).
+- [ ] Set `type` to a valid claim type: core (`mir.{category}.{action}`) or extension (`{domain}:{category}.{action}`).
 - [ ] Set `domain` to a valid DNS hostname controlled by the signer.
 - [ ] Set `subject` to a 64-character lowercase hex string (SHA-256 or HMAC-SHA256).
 - [ ] Set `timestamp` to a valid ISO 8601 datetime with timezone.
@@ -22,7 +22,7 @@ A conformant signer MUST NOT:
 
 - [ ] Include plaintext PII in `subject` or `metadata`.
 - [ ] Use email, phone number, or other directly identifiable values as `externalUserId` without HMAC derivation.
-- [ ] Create non-colon claim types outside of protocol versions (reserved namespace).
+- [ ] Create `mir.`-prefixed claim types outside of protocol versions (reserved namespace).
 
 A conformant signer SHOULD:
 
@@ -56,7 +56,7 @@ A conformant verifier SHOULD:
 
 A conformant verifier MAY:
 
-- [ ] Reject claims with expired keys (`KEY_EXPIRED`).
+- [ ] Reject claims with expired keys (`KEY_EXPIRED`). SHOULD evaluate key validity at the claim's `timestamp`, not at verification time, and allow 5 minutes of clock skew.
 - [ ] Reject claims exceeding a freshness window (`CLAIM_EXPIRED`).
 - [ ] Reject claims from unexpected domains (`DOMAIN_MISMATCH`).
 - [ ] Accept claims with unrecognized extension types (signature validity is independent of type recognition).

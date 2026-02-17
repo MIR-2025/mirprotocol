@@ -1,13 +1,13 @@
 {
   "mir": 1,
-  "type": "transaction.completed",
+  "type": "mir.transaction.completed",
   "domain": "marketplace.example.com",
   "subject": "ea3eeb449dc86b1a3f7fe8567c939b0da26437ecce5e6a7a1f275d2b07ada6d9",
   "timestamp": "2026-02-16T15:30:00Z",
-  "keyFingerprint": "5db3093f6ea4f8549d15656fe0e48c1b54302f1e369cc690dd8c703ff30963f4",
+  "keyFingerprint": "4516b32d57c1933d7c8a6427e590b29ef9115db03937881d2d42842a111d0cdc",
   "metadata": {
     "currency": "USD",
     "count": 1
   },
-  "sig": "ByLjpCGuDeUNZdWdgiHHEmF7-jtC39ZmEom_JEYCJFBxCyFDjE2QZCBhChTLXI3TJXheHRMxOOfDD7j0Ox8LAg"
+  "sig": "kzgnSim129EqzOH7lnOWHNXcI4O5itI-OxYLN3EX8uB_hUWkl7C_sP3dMKIOyjA1BhGrs9kgsqdeCJrp108FCw"
 }

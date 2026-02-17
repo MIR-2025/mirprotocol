@@ -23,7 +23,7 @@ The value is the raw 32-byte Ed25519 public key, base64url-encoded without paddi
 For domain `marketplace.example.com`:
 
 ```
-_mir-key.marketplace.example.com.  IN  TXT  "mir-key=O2onvM62pC1io6jQKm8Nc2UyFXcd4kOmOsBIoYtZ2ik="
+_mir-key.marketplace.example.com.  IN  TXT  "mir-key=O2onvM62pC1io6jQKm8Nc2UyFXcd4kOmOsBIoYtZ2ik"
 ```
 
 ### Multiple Keys
@@ -31,8 +31,8 @@ _mir-key.marketplace.example.com.  IN  TXT  "mir-key=O2onvM62pC1io6jQKm8Nc2UyFXc
 Multiple TXT records may exist for the same subdomain. Each record represents one active key. Verifiers match against the `keyFingerprint` field in the claim.
 
 ```
-_mir-key.example.com.  IN  TXT  "mir-key=O2onvM62pC1io6jQKm8Nc2UyFXcd4kOmOsBIoYtZ2ik="
-_mir-key.example.com.  IN  TXT  "mir-key=dGhpcyBpcyBhIHNlY29uZCBrZXkgZXhhbXBsZQ=="
+_mir-key.example.com.  IN  TXT  "mir-key=O2onvM62pC1io6jQKm8Nc2UyFXcd4kOmOsBIoYtZ2ik"
+_mir-key.example.com.  IN  TXT  "mir-key=dGhpcyBpcyBhIHNlY29uZCBrZXkgZXhhbXBsZQ"
 ```
 
 ### Advantages
@@ -61,7 +61,7 @@ https://{domain}/.well-known/mir.json
 {
   "keys": [
     {
-      "pub": "O2onvM62pC1io6jQKm8Nc2UyFXcd4kOmOsBIoYtZ2ik=",
+      "pub": "O2onvM62pC1io6jQKm8Nc2UyFXcd4kOmOsBIoYtZ2ik",
       "fingerprint": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "alg": "Ed25519",
       "created": "2026-01-15T00:00:00Z",

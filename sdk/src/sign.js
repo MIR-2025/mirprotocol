@@ -9,48 +9,49 @@ import { canonicalize } from './serialize.js';
 
 /**
  * Core MIR claim types (protocol-defined).
- * Types without a colon prefix are reserved for the MIR protocol.
+ * All core types use the `mir.` namespace prefix.
+ * Types without a colon are reserved for the MIR protocol.
  */
 export const CORE_CLAIM_TYPES = [
-  'transaction.initiated',
-  'transaction.completed',
-  'transaction.fulfilled',
-  'transaction.cancelled',
-  'transaction.refunded',
-  'transaction.disputed',
-  'transaction.chargeback',
-  'account.created',
-  'account.updated',
-  'account.verified',
-  'account.suspended',
-  'account.closed',
-  'review.submitted',
-  'review.received',
-  'rating.received',
-  'message.sent',
-  'message.received',
-  'response.provided',
-  'policy.warning',
-  'policy.violation',
-  'terms.violation',
-  'signal.positive',
-  'signal.negative',
+  'mir.transaction.initiated',
+  'mir.transaction.completed',
+  'mir.transaction.fulfilled',
+  'mir.transaction.cancelled',
+  'mir.transaction.refunded',
+  'mir.transaction.disputed',
+  'mir.transaction.chargeback',
+  'mir.account.created',
+  'mir.account.updated',
+  'mir.account.verified',
+  'mir.account.suspended',
+  'mir.account.closed',
+  'mir.review.submitted',
+  'mir.review.received',
+  'mir.rating.received',
+  'mir.message.sent',
+  'mir.message.received',
+  'mir.response.provided',
+  'mir.policy.warning',
+  'mir.policy.violation',
+  'mir.terms.violation',
+  'mir.signal.positive',
+  'mir.signal.negative',
 ];
 
 /**
  * Validate a claim type string.
- * Core types: {category}.{action} (no colon)
+ * Core types: mir.{category}.{action} (namespaced, no colon)
  * Extension types: {domain}:{category}.{action}
  *
  * @param {string} type
  * @returns {boolean}
  */
 export function isValidClaimType(type) {
-  // Core type: lowercase alpha + dots, at least one dot, no colon
-  if (/^[a-z][a-z0-9]*\.[a-z][a-z0-9_]*$/.test(type)) {
+  // Core type: mir.{category}.{action}
+  if (/^mir\.[a-z][a-z0-9]*\.[a-z][a-z0-9_]*$/.test(type)) {
     return true;
   }
-  // Extension type: domain:category.action
+  // Extension type: {domain}:{category}.{action}
   if (/^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}:[a-z][a-z0-9]*\.[a-z][a-z0-9_]*$/.test(type)) {
     return true;
   }
@@ -120,7 +121,7 @@ export function subjectHashHmac(domain, externalUserId, domainSecret) {
  */
 export function createClaim({ type, domain, subject, timestamp, metadata, privateKey, keyFingerprint: kf }) {
   if (!isValidClaimType(type)) {
-    throw new Error(`Invalid claim type: "${type}". Must be {category}.{action} or {domain}:{category}.{action}`);
+    throw new Error(`Invalid claim type: "${type}". Must be mir.{category}.{action} or {domain}:{category}.{action}`);
   }
 
   if (!/^[a-f0-9]{64}$/.test(subject)) {

@@ -2,12 +2,12 @@
   "timestamp": "2026-03-01T00:00:00Z",
   "domain": "trap.example.com",
   "mir": 1,
-  "subject": "9839ca53220dd639f06957bfa10c2507d7d1944d82fb403e23f10d21ec86647e",
+  "subject": "315dda18d4b8f3fd10300a10c3ca8812426bb13f6f502e5818cdd87797772362",
   "metadata": {
     "zebra": 1,
     "alpha": 2
   },
-  "type": "account.verified",
-  "keyFingerprint": "5db3093f6ea4f8549d15656fe0e48c1b54302f1e369cc690dd8c703ff30963f4",
-  "sig": "TSeflg6fec8HUOgPk7vMjf_N3EzQp4CudOXdwBv2zGdor-D4bLHX8ab-5ZvRGlnV2MpZyQuDFWKh3SnUOatGDQ"
+  "type": "mir.account.verified",
+  "keyFingerprint": "4516b32d57c1933d7c8a6427e590b29ef9115db03937881d2d42842a111d0cdc",
+  "sig": "d3nF9WTl8qBG5GusWYlZ1OVhMXe8mU6zQWKxRK22NIwXkLyHQAc51sdvw2saBOHGb_ZUPMLpIRYtcqWe2ye_Cg"
 }

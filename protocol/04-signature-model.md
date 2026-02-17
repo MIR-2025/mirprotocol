@@ -88,7 +88,7 @@ Given this claim:
 ```json
 {
   "mir": 1,
-  "type": "transaction.completed",
+  "type": "mir.transaction.completed",
   "domain": "example.com",
   "subject": "a55bea0a6788794ef1307951f98bc339db7ccf9309881180e9e6c080f63ae618",
   "timestamp": "2026-02-16T15:30:00Z",
@@ -101,7 +101,7 @@ Given this claim:
 The canonical form (before signing) is:
 
 ```
-{"domain":"example.com","keyFingerprint":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855","metadata":{"count":1,"currency":"USD"},"mir":1,"subject":"a55bea0a6788794ef1307951f98bc339db7ccf9309881180e9e6c080f63ae618","timestamp":"2026-02-16T15:30:00Z","type":"transaction.completed"}
+{"domain":"example.com","keyFingerprint":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855","metadata":{"count":1,"currency":"USD"},"mir":1,"subject":"a55bea0a6788794ef1307951f98bc339db7ccf9309881180e9e6c080f63ae618","timestamp":"2026-02-16T15:30:00Z","type":"mir.transaction.completed"}
 ```
 
 Note: keys are sorted (`domain` < `keyFingerprint` < `metadata` < `mir` < ...), and within `metadata`, keys are also sorted (`count` < `currency`).

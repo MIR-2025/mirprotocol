@@ -23,7 +23,7 @@ VERIFY(claim):
 
   3. Validate field formats:
      - mir MUST equal 1.
-     - type MUST match pattern: core ({category}.{action}) or
+     - type MUST match pattern: core (mir.{category}.{action}) or
        extension ({domain}:{category}.{action}).
      - domain MUST be a valid DNS hostname.
      - subject MUST be a 64-character lowercase hex string.
@@ -46,8 +46,17 @@ VERIFY(claim):
      c. From the discovered keys, find the key whose
         SHA256(raw_32_byte_public_key) == claim.keyFingerprint
      REJECT(KEY_NOT_FOUND) if no matching key is found.
-     REJECT(KEY_EXPIRED) if the matching key has a non-null expires
-       and the verifier's policy rejects expired keys for this claim.
+
+     6a. Check key temporal validity:
+         If the matching key has a non-null `expires`:
+         - The key SHOULD be considered valid if the claim's `timestamp`
+           falls before the key's `expires` value (the key was active
+           when the claim was issued).
+         - Verifiers SHOULD allow up to 5 minutes of clock skew
+           (accept claims with `timestamp` up to 5 minutes after `expires`).
+         - REJECT(KEY_EXPIRED) if the verifier's policy rejects
+           claims signed with expired keys, even when the claim
+           predates the expiry.
 
   7. Base64url-decode the sig to obtain the 64-byte signature.
 
@@ -111,12 +120,16 @@ Multiple claims can be verified independently. There is no interdependency betwe
 
 For efficiency, verifiers SHOULD cache public keys by domain and fingerprint to avoid redundant discovery.
 
-## Timestamp Validation
+## Timestamp and Clock Skew
 
-Verifiers MAY apply additional timestamp checks:
+Verifiers SHOULD allow up to **5 minutes** of clock skew in all temporal comparisons. This applies to:
 
-- Reject claims with timestamps more than 5 minutes in the future (`CLAIM_EXPIRED`).
-- Flag claims with timestamps significantly before the key's `created` date.
-- Cross-reference with registry ingestion timestamps if available.
+- **Key expiry:** A claim with `timestamp` up to 5 minutes after a key's `expires` SHOULD still be accepted.
+- **Future claims:** Reject claims with `timestamp` more than 5 minutes in the future (`CLAIM_EXPIRED`).
+- **Key creation:** Flag claims with `timestamp` significantly before the key's `created` date.
 
-These are verifier policy decisions, not protocol requirements.
+**Key validity is evaluated at the claim's `timestamp`, not at verification time.** A claim signed when the key was active remains valid even if the key has since expired. This preserves historical verifiability — an expired key does not retroactively invalidate claims signed during its active period.
+
+Verifiers MAY cross-reference with registry ingestion timestamps if available.
+
+These are verifier policy decisions, not protocol requirements. The protocol itself only mandates signature verification (step 8).
