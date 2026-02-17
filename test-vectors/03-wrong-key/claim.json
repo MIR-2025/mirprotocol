@@ -4,6 +4,6 @@
   "domain": "example.com",
   "subject": "31ee77d81f4cf5df87c0e6d30fc6a91864359ec1f1485afad3cee6afa1020754",
   "timestamp": "2026-01-15T10:00:00Z",
-  "keyFingerprint": "b5974492d705c29529ed5b9cf6752fbef638c12e47aaff823713ef13ec91e3c6",
-  "sig": "QW1x7r0vl2noSVDgRVhwopsH0c7adLR8k7B8B16FqxE-SX3wOSQnVTE2kHenuQuKKSI4BSweeY3zRd2tb6vJBA"
+  "keyFingerprint": "f96752ea8721cee9177135c7763dbb700a4abcc054c3224daf8cb61529d7ae52",
+  "sig": "q4XPONaU7L5sizEus8uh1sG90M3uhNb1w1v99qT8M1j7MO0gLkceNdEytAiAIrxW15LtO9_Kkatqa2FtzWRiAg"
 }

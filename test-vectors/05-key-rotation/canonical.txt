@@ -1,1 +1,1 @@
-{"domain":"platform.example.com","keyFingerprint":"b5974492d705c29529ed5b9cf6752fbef638c12e47aaff823713ef13ec91e3c6","mir":1,"subject":"b17cddf45fd217c347f5263b45567e7d4febe36b74dfd9a7b2fa12836b703e44","timestamp":"2026-02-10T08:00:00Z","type":"mir.account.updated"}
+{"domain":"platform.example.com","keyFingerprint":"f96752ea8721cee9177135c7763dbb700a4abcc054c3224daf8cb61529d7ae52","mir":1,"subject":"b17cddf45fd217c347f5263b45567e7d4febe36b74dfd9a7b2fa12836b703e44","timestamp":"2026-02-10T08:00:00Z","type":"mir.account.updated"}

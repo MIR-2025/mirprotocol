@@ -178,7 +178,7 @@ const subjectTrap = createHash('sha256').update('trap.example.com:user_trap').di
 {
   const claim = {
     mir: 1,
-    type: 'mir.review.submitted',
+    type: 'mir.account.verified',
     domain: 'reviews.example.com',
     subject: subjectReviews,
     timestamp: '2025-06-01T12:00:00Z',

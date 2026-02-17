@@ -25,14 +25,9 @@ export const CORE_CLAIM_TYPES = [
   'mir.account.verified',
   'mir.account.suspended',
   'mir.account.closed',
-  'mir.review.submitted',
-  'mir.review.received',
   'mir.message.sent',
   'mir.message.received',
   'mir.response.provided',
-  'mir.policy.warning',
-  'mir.policy.violation',
-  'mir.terms.violation',
 ];
 
 /**

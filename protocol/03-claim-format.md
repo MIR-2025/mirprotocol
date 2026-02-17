@@ -152,13 +152,6 @@ The following types are defined by the protocol. They record structural particip
 | `mir.account.suspended` | Account suspended |
 | `mir.account.closed` | Account closed |
 
-#### Review
-
-| Type | Description |
-|------|-------------|
-| `mir.review.submitted` | Subject submitted a review |
-| `mir.review.received` | Subject received a review |
-
 #### Communication
 
 | Type | Description |
@@ -167,17 +160,9 @@ The following types are defined by the protocol. They record structural particip
 | `mir.message.received` | Message received |
 | `mir.response.provided` | Response to inquiry |
 
-#### Policy
-
-| Type | Description |
-|------|-------------|
-| `mir.policy.warning` | Policy warning issued |
-| `mir.policy.violation` | Policy violation recorded |
-| `mir.terms.violation` | Terms of service violated |
-
 ### Type Extensibility
 
-Domains MAY define extension types for domain-specific events not covered by core types.
+Domains MAY define extension types for domain-specific events not covered by core types. Behavioral, evaluative, or policy-specific semantics belong here — not in core.
 
 **Extension type format:** `{domain}:{category}.{action}`
 
@@ -185,6 +170,10 @@ Domains MAY define extension types for domain-specific events not covered by cor
 shopify.com:loyalty.earned
 university.edu:credential.issued
 bank.example.com:kyc.completed
+marketplace.example.com:review.submitted
+marketplace.example.com:review.received
+platform.example.com:policy.warning
+platform.example.com:policy.violation
 ```
 
 **Rules:**
