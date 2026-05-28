@@ -4,13 +4,15 @@
 
 A MIR claim is a cryptographically signed record that asserts: *a specific event involving a pseudonymous subject occurred at a specific time, as attested by a specific domain.*
 
+MIR Protocol defines the portable, domain-signed claim format. Policy decisions, trust tiers, and scoring are an optional application layer built on top.
+
 ## Core Properties
 
 - **Cryptographically verifiable.** Every claim carries an Ed25519 signature from the issuing domain. Verification requires no trusted third party.
 - **Registry-agnostic.** Claims can be verified offline, peer-to-peer, or against any registry. No single registry is authoritative.
 - **Non-scoring.** MIR records participation. It does not calculate trust, reputation, or behavioral rankings.
 - **Non-evaluative.** MIR does not judge whether a claim is true. It proves who made the claim, when, and that it has not been altered.
-- **Privacy-preserving.** Subject identifiers are domain-scoped SHA-256 hashes. No PII enters the protocol.
+- **Privacy-minimizing by design.** Subject identifiers are domain-scoped hashes. No plaintext PII enters the protocol.
 
 ## What a Claim Proves
 
@@ -55,7 +57,7 @@ Given a valid MIR claim, any verifier can independently confirm:
 |----------|----------|
 | [02 — Terminology](02-terminology.md) | Defined terms |
 | [03 — Claim Format](03-claim-format.md) | Claim structure, fields, constraints |
-| [04 — Signature Model](04-signature-model.md) | Canonical serialization and Ed25519 signing |
+| [04 — Signature Model](04-signature-model.md) | MIR Canonical JSON (MCJ) serialization and Ed25519 signing |
 | [05 — Domain Key Discovery](05-domain-key-discovery.md) | DNS TXT and `.well-known` key publication |
 | [06 — Verification Process](06-verification-process.md) | Deterministic verification algorithm |
 | [07 — Registry Role](07-registry-role.md) | What registries do and do not provide |

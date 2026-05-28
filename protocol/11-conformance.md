@@ -22,11 +22,12 @@ A conformant signer MUST NOT:
 
 - [ ] Include plaintext PII in `subject` or `metadata`.
 - [ ] Use email, phone number, or other directly identifiable values as `externalUserId` without HMAC derivation.
+- [ ] Use plain SHA-256 subject derivation when `externalUserId` has fewer than 128 bits of entropy (e.g., sequential integers, short alphanumeric codes, phone numbers). HMAC-SHA256 MUST be used in these cases.
 - [ ] Create `mir.`-prefixed claim types outside of protocol versions (reserved namespace).
 
 A conformant signer SHOULD:
 
-- [ ] Use HMAC-SHA256 for subject derivation instead of plain SHA-256.
+- [ ] Use HMAC-SHA256 for subject derivation even when `externalUserId` has sufficient entropy (defense in depth).
 - [ ] Use integers and strings (not floats) in `metadata`.
 - [ ] Rotate signing keys every 90 days.
 - [ ] Set timestamps in UTC.

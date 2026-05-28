@@ -149,11 +149,14 @@ The protocol does not define a formal revocation list. The revocation signal is 
 If a key is compromised:
 
 1. **Immediately** remove it from DNS and set `expires` in `.well-known`.
-2. Generate and publish a new key.
-3. Re-sign any claims that were issued during the suspected compromise window, using the new key, with updated timestamps.
-4. Notify any registries holding claims signed with the compromised key.
+2. **Reduce cache TTLs** to minimize the window where verifiers accept the compromised key:
+   - Set `.well-known` `Cache-Control` to `max-age=60` or lower.
+   - Reduce DNS TTL to the minimum allowed by your provider (typically 60–300 seconds).
+3. Generate and publish a new key.
+4. Re-sign any claims that were issued during the suspected compromise window, using the new key, with updated timestamps.
+5. Notify any registries holding claims signed with the compromised key.
 
-The protocol cannot retroactively invalidate claims signed with a compromised key — the signatures are mathematically valid. The domain's response is operational: narrow the window, rotate fast, and communicate.
+The protocol cannot retroactively invalidate claims signed with a compromised key — the signatures are mathematically valid. The domain's response is operational: narrow the window, rotate fast, and communicate. The gap between compromise discovery and verifier cache expiry is the primary risk window — lowering TTLs in step 2 minimizes it.
 
 ### Cache TTLs
 

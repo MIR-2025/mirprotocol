@@ -16,6 +16,22 @@ The canonical serialization rules (sorted keys, no whitespace, UTF-8) ensure tha
 
 Implementations MUST follow the canonical serialization rules exactly. A common source of bugs is inconsistent number serialization (e.g., `1.0` vs `1` vs `1.00`). The reference SDK provides a canonical serializer.
 
+## Infrastructure Trust Assumptions
+
+### DNS and HTTPS as Key Discovery Channels
+
+MIR key discovery relies on DNS TXT records and HTTPS `.well-known` endpoints — the same infrastructure that underpins DKIM, DMARC, MTA-STS, and Let's Encrypt domain validation. An attacker who can hijack a domain's DNS or forge its TLS certificate can serve a false public key and sign claims as that domain.
+
+This is not a risk unique to MIR. It is the ambient risk of any domain-anchored trust model. DKIM has the same exposure: a DNS hijack lets an attacker forge DKIM-signed email. The mitigations are the same: DNSSEC, certificate transparency, and operational monitoring.
+
+MIR does not introduce a new PKI. It rides the existing DNS/HTTPS infrastructure because that infrastructure is already the trust boundary that domains manage. Adding a separate PKI would increase complexity without reducing the attack surface — any system that can hijack DNS can also compromise a custom PKI's enrollment flow.
+
+**Mitigations:**
+- DNSSEC prevents DNS record forgery.
+- `.well-known` over HTTPS provides TLS-protected key discovery as an independent channel.
+- Verifiers SHOULD use both channels and flag discrepancies.
+- Registry `ingestedAt` timestamps provide a temporal anchor that survives DNS changes.
+
 ## Key Management
 
 ### Key Compromise
@@ -40,6 +56,35 @@ Domains SHOULD rotate keys periodically. The protocol supports multiple simultan
 
 The protocol does not define a formal revocation mechanism. Removing a key from publication is the revocation signal. Verifiers encountering a `keyFingerprint` that cannot be discovered MUST reject the claim.
 
+### Domain Ownership Transfer
+
+The domain field is the identity anchor in MIR. If a domain changes ownership — through acquisition, bankruptcy, or expiration — the new owner controls key publication for that domain. This creates two risks:
+
+1. **Historical claims become unverifiable.** If the new owner does not republish the old keys, verifiers cannot discover the public key needed to verify historical claims.
+2. **Impersonation.** The new owner can publish new keys and sign claims as the historical entity.
+
+These are the same risks that affect DKIM, SPF, and any domain-anchored identity system. MIR does not solve domain continuity — no domain-anchored protocol does.
+
+**Mitigations for verifiers:**
+- Cross-reference registry `ingestedAt` timestamps. Claims ingested before an ownership transfer date are attributable to the original entity.
+- Key fingerprint discontinuity is a detectable signal. A sudden change in published keys without overlap suggests an ownership change, not a routine rotation.
+- Verifiers consuming historical claims SHOULD cache public keys and not rely solely on live discovery.
+
+**Mitigations for domains:**
+- Domains that anticipate a transfer SHOULD set key expiry dates before the transfer completes.
+- Registries holding historical claims provide continuity even after domain ownership changes.
+
+### Timestamp Integrity
+
+The `timestamp` field in a claim is asserted by the signing domain. The protocol does not prove that the event actually occurred at the stated time. A domain can backdate claims — signing a `mir.transaction.completed` today with a timestamp from six months ago.
+
+**Mitigations:**
+- Registry `ingestedAt` provides an independent lower bound on when a claim was first observed. A claim cannot have been created before it was ingested.
+- Verifiers SHOULD compare `timestamp` against `ingestedAt` when both are available. A large discrepancy (claim timestamp significantly before ingestion) is not necessarily invalid — legitimate delayed submission exists — but it is a signal worth logging.
+- Without a registry, there is no independent timestamp integrity. This is an inherent limitation of any self-asserted timestamp model.
+
+This is comparable to X.509 `notBefore` and `notAfter` fields, which are also CA-asserted rather than proven by an independent time authority.
+
 ## Subject Privacy
 
 ### Hash Preimage
@@ -47,8 +92,9 @@ The protocol does not define a formal revocation mechanism. Removing a key from 
 Subject hashes are `SHA256("{domain}:{externalUserId}")`. If the domain and the format of external user IDs are known, an attacker could attempt to brute-force the hash to identify the subject.
 
 **Mitigations:**
-- Use sufficiently random or long external user IDs.
-- Domains MAY add a domain-specific salt to the hash input (must be consistent and documented).
+- Use HMAC-SHA256 subject derivation (see [03 — Claim Format](03-claim-format.md#recommended-derivation-hmac-sha256)). HMAC resists brute-force even when the ID format is known.
+- Domains MUST use HMAC derivation when external user IDs have predictable format or fewer than 128 bits of entropy (e.g., sequential integers, short alphanumeric codes, phone numbers).
+- Domains using plain SHA-256 SHOULD use sufficiently random identifiers (UUIDs, database-generated IDs with at least 128 bits of randomness).
 
 ### Cross-Domain Correlation
 
@@ -94,3 +140,26 @@ If a verifier needs context binding (e.g., "this claim was presented specificall
 ### Duplicate Submission
 
 A claim submitted to multiple registries is not an attack — it's expected behavior. Registries SHOULD deduplicate by claim signature (identical `sig` values represent the same claim). A claim's identity is its signature.
+
+## Metadata and Data Protection
+
+### PII in Metadata
+
+The `metadata` field is an arbitrary JSON object up to 4 KB. The protocol requires that metadata MUST NOT contain PII (see [03 — Claim Format](03-claim-format.md#metadata-optional)). However, this is a normative requirement with no technical enforcement — the protocol cannot inspect or reject specific metadata content.
+
+A domain that includes personal data in metadata (e.g., email addresses, names, phone numbers) is non-conformant, but the resulting claim is still cryptographically valid and will pass signature verification.
+
+### Immutability and Erasure
+
+Claims are immutable by design. The Ed25519 signature covers the entire payload including metadata. Modifying or redacting any field — including metadata — invalidates the signature.
+
+This creates a tension with data protection frameworks that provide a right to erasure (e.g., GDPR Article 17, CCPA). If PII enters a signed claim:
+
+- The claim cannot be modified without breaking the signature.
+- Deleting the claim from a registry removes it from that index but does not affect copies held by other registries or verifiers.
+
+**Mitigations:**
+- Domains bear sole responsibility for ensuring no personal data enters claim payloads. This is an operational control, not a protocol-level guarantee.
+- Registries facing erasure requests for claims containing PII SHOULD remove the claim from their index and note the removal reason. The underlying signature remains mathematically valid but the claim is no longer served.
+- Verifiers SHOULD NOT cache claim metadata beyond their operational needs.
+- The strongest mitigation is prevention: domains SHOULD validate metadata content before signing, and SHOULD implement automated checks that reject PII patterns (email addresses, phone numbers, government ID formats) at claim creation time.

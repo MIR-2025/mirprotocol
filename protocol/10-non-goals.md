@@ -34,6 +34,14 @@ MIR claims are not credentials. They do not grant or deny access to systems. A v
 
 MIR claims are signed, not encrypted. The protocol provides integrity and authorship guarantees, not confidentiality. Claims are designed to be publicly verifiable.
 
+## Claim Chaining
+
+MIR claims are independent documents. There is no `relatedClaimId`, `parentSig`, or causal link between claims. A `mir.transaction.refunded` claim does not formally reference the `mir.transaction.completed` it corrects.
+
+This is by design. Causal links would require a shared ordering authority or a registry that tracks claim sequences — undermining the "registry is optional" property. Lifecycle reconstruction is the consuming system's responsibility, using subject, domain, type, and timestamp to infer sequence.
+
+Domains MAY include application-specific identifiers in `metadata` (e.g., a platform transaction ID) to enable linking at the application layer. The protocol does not interpret or enforce these.
+
 ## Consensus
 
 MIR does not use distributed consensus, blockchain, or any replicated state machine. Claims are signed documents, not ledger entries. There is no global ordering requirement.

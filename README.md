@@ -17,7 +17,7 @@ Identity stacks decide. MIR supplies the durable context they decide *with*.
 - **Portable participation history.** Claims move with the subject across systems. No vendor lock-in, no proprietary APIs to integrate.
 - **Offline-verifiable.** Ed25519 signatures verify without calling home. Fits Zero Trust architectures where every assertion is checked, nothing is implicitly trusted.
 - **No opinion layer.** MIR doesn't score, rank, or recommend. Your policy engine consumes raw claims and applies your rules. MIR stays out of the decision path.
-- **Survives domain rotation.** Signed claims remain verifiable even after key rotation or domain changes. Historical context doesn't evaporate.
+- **Survives key rotation.** Historical claims remain verifiable even as domains rotate signing keys. Context doesn't evaporate.
 
 MIR is the participation layer your identity stack reads from. It doesn't replace your IdP, your SIEM, or your policy engine. It gives them something durable to read.
 
@@ -27,7 +27,7 @@ MIR is the participation layer your identity stack reads from. It doesn't replac
 - **No central authority.** Registries provide discovery and availability. They are not trust anchors. They cannot forge signatures.
 - **Non-scoring.** MIR records participation. It does not calculate trust, reputation, or behavioral rankings.
 - **Non-evaluative.** MIR proves who signed a claim. It does not judge whether the claim is true.
-- **Privacy-preserving.** Subject identifiers are domain-scoped SHA-256 hashes. No PII enters the protocol.
+- **Privacy-minimizing by design.** Subject identifiers are domain-scoped hashes; no plaintext PII enters the protocol.
 
 ## Registry Is Optional
 
@@ -156,6 +156,12 @@ mirprotocol.net/
     ├── test/
     └── package.json
 ```
+
+## Governance
+
+This specification is maintained by [MIR.org](https://mir.org). It is published as an open draft under the MIT license. Community feedback, implementation reports, and security disclosures are welcome via the project's issue tracker.
+
+Formal governance — including a process for protocol versioning, new core type proposals, and multi-stakeholder review — will be established as adoption warrants. The `mir` version field in every claim ensures that future protocol versions can coexist with version 1 claims without breaking backward compatibility.
 
 ## License
 
