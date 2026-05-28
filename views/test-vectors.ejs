@@ -1,0 +1,130 @@
+<% const pageTitle = 'Test Vectors' %>
+<% const pageDescription = 'MIR Protocol normative test vectors — six scenarios with real Ed25519 signatures for implementation conformance testing.' %>
+<%- include('partials/header') %>
+
+<div class="page-header">
+  <h1>Test Vectors</h1>
+  <p>Six normative scenarios with real Ed25519 signatures. Implementations must pass all of them.</p>
+</div>
+
+<section class="section">
+  <div class="container">
+    <div class="tv-grid">
+      <div class="tv-card tv-accept">
+        <div class="tv-num">01</div>
+        <div class="tv-info">
+          <h3>Valid Claim</h3>
+          <p>Happy path: valid signature, valid fields, correct key fingerprint.</p>
+        </div>
+        <span class="tv-result">ACCEPT</span>
+      </div>
+
+      <div class="tv-card tv-reject">
+        <div class="tv-num">02</div>
+        <div class="tv-info">
+          <h3>Tampered Payload</h3>
+          <p>Domain changed by one byte after signing (<code>.com</code> to <code>.con</code>).</p>
+        </div>
+        <span class="tv-result">INVALID_SIGNATURE</span>
+      </div>
+
+      <div class="tv-card tv-reject">
+        <div class="tv-num">03</div>
+        <div class="tv-info">
+          <h3>Wrong Key</h3>
+          <p>Signed by key B, verified against key A. Fingerprint mismatch.</p>
+        </div>
+        <span class="tv-result">KEY_NOT_FOUND</span>
+      </div>
+
+      <div class="tv-card tv-accept">
+        <div class="tv-num">04</div>
+        <div class="tv-info">
+          <h3>Expired Key</h3>
+          <p>Valid signature, but the key has an <code>expires</code> date in the past. Policy may reject.</p>
+        </div>
+        <span class="tv-result">ACCEPT</span>
+      </div>
+
+      <div class="tv-card tv-accept">
+        <div class="tv-num">05</div>
+        <div class="tv-info">
+          <h3>Key Rotation</h3>
+          <p>Accept under the new key, reject under the old key (fingerprint mismatch).</p>
+        </div>
+        <span class="tv-result">ACCEPT / REJECT</span>
+      </div>
+
+      <div class="tv-card tv-accept">
+        <div class="tv-num">06</div>
+        <div class="tv-info">
+          <h3>Canonicalization Trap</h3>
+          <p>JSON keys deliberately unsorted. Tests that the verifier sorts before verifying.</p>
+        </div>
+        <span class="tv-result">ACCEPT</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <h2>File Format</h2>
+    <p style="color: rgba(255,255,255,0.8); margin-bottom: 1.5rem;">Each test vector directory contains four files:</p>
+    <table class="spec-table">
+      <thead>
+        <tr>
+          <th>File</th>
+          <th>Contents</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code style="color: #4fd1c5;">claim.json</code></td>
+          <td style="color: rgba(255,255,255,0.7);">The MIR claim (human-readable JSON)</td>
+        </tr>
+        <tr>
+          <td><code style="color: #4fd1c5;">canonical.txt</code></td>
+          <td style="color: rgba(255,255,255,0.7);">Exact canonical byte string that was signed/verified</td>
+        </tr>
+        <tr>
+          <td><code style="color: #4fd1c5;">signature.txt</code></td>
+          <td style="color: rgba(255,255,255,0.7);">Base64url-encoded Ed25519 signature</td>
+        </tr>
+        <tr>
+          <td><code style="color: #4fd1c5;">expected.json</code></td>
+          <td style="color: rgba(255,255,255,0.7);">Expected verification result and error code</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<% if (vectors.length > 0) { %>
+<section class="section">
+  <div class="container">
+    <h2>Example: Valid Claim</h2>
+    <p style="color: rgba(255,255,255,0.7); margin-bottom: 1.5rem;">From <code>01-valid-claim/claim.json</code>:</p>
+    <div class="claim-example">
+      <pre><%= JSON.stringify(vectors[0].claim, null, 2) %></pre>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<section class="section section-alt">
+  <div class="container" style="text-align: center;">
+    <h2 class="center">Validation Scripts</h2>
+    <p style="color: rgba(255,255,255,0.7); margin-bottom: 1.5rem;">Generate or validate test vectors against your implementation:</p>
+    <div class="install-box">
+      <span class="label">Generate</span>
+      <code>node test-vectors/generate.mjs</code>
+    </div>
+    <div class="install-box">
+      <span class="label">Validate</span>
+      <code>node test-vectors/validate.mjs</code>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

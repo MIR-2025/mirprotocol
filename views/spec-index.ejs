@@ -1,0 +1,38 @@
+<% const pageTitle = 'Specification' %>
+<% const pageDescription = 'MIR Protocol specification documents — the complete technical reference for cryptographically verifiable participation claims.' %>
+<%- include('partials/header') %>
+
+<div class="page-header">
+  <h1>Specification</h1>
+  <p>Version 0.2.0 — Draft. The complete protocol defined across 11 documents.</p>
+</div>
+
+<section class="section">
+  <div class="container">
+    <table class="spec-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Document</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% specDocs.forEach(doc => { %>
+        <tr>
+          <td class="doc-num"><%= doc.num %></td>
+          <td><a href="/spec/<%= doc.slug %>"><%= doc.title %></a></td>
+          <td style="color: rgba(255,255,255,0.6); font-size: 0.9rem;"><%= doc.desc %></td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+
+    <div style="margin-top: 3rem; text-align: center;">
+      <p style="color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-bottom: 1rem;">This specification uses RFC 2119 keywords (MUST, SHOULD, MAY) throughout.</p>
+      <a href="/spec/01-overview" class="btn-primary">Start Reading</a>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

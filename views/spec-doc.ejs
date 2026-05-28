@@ -1,0 +1,29 @@
+<% const pageTitle = doc.num + ' — ' + doc.title %>
+<% const pageDescription = 'MIR Protocol specification: ' + doc.title %>
+<%- include('partials/header') %>
+
+<div class="spec-page">
+  <aside class="spec-sidebar">
+    <h4>Specification</h4>
+    <ul>
+      <% specDocs.forEach(d => { %>
+      <li><a href="/spec/<%= d.slug %>" class="<%= d.slug === doc.slug ? 'active' : '' %>"><%= d.num %>. <%= d.title %></a></li>
+      <% }) %>
+    </ul>
+  </aside>
+
+  <article class="spec-content">
+    <%- content %>
+
+    <nav class="spec-nav">
+      <% if (prevDoc) { %>
+      <a href="/spec/<%= prevDoc.slug %>" class="prev">&larr; <%= prevDoc.num %>. <%= prevDoc.title %></a>
+      <% } %>
+      <% if (nextDoc) { %>
+      <a href="/spec/<%= nextDoc.slug %>" class="next"><%= nextDoc.num %>. <%= nextDoc.title %> &rarr;</a>
+      <% } %>
+    </nav>
+  </article>
+</div>
+
+<%- include('partials/footer') %>

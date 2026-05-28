@@ -1,0 +1,99 @@
+<% const pageTitle = 'Reference SDK' %>
+<% const pageDescription = 'MIR Protocol reference SDK — a minimal JavaScript implementation for claim creation, signing, and verification.' %>
+<%- include('partials/header') %>
+
+<div class="page-header">
+  <h1>Reference SDK</h1>
+  <p>A minimal JavaScript implementation. Zero dependencies. Node.js 20+.</p>
+</div>
+
+<section class="section">
+  <div class="container">
+    <h2>Modules</h2>
+    <div class="sdk-grid">
+      <div class="sdk-card">
+        <h3>serialize.js</h3>
+        <p>Canonical JSON serialization for signing and verification.</p>
+        <ul class="func-list">
+          <li>canonicalize(claim)</li>
+          <li>canonicalString(claim)</li>
+        </ul>
+      </div>
+
+      <div class="sdk-card">
+        <h3>sign.js</h3>
+        <p>Key generation, subject hashing, and claim creation.</p>
+        <ul class="func-list">
+          <li>generateKeyPair()</li>
+          <li>keyFingerprint(publicKey)</li>
+          <li>subjectHash(domain, userId)</li>
+          <li>subjectHashHmac(domain, userId, secret)</li>
+          <li>createClaim({ ... })</li>
+          <li>isValidClaimType(type)</li>
+          <li>CORE_CLAIM_TYPES</li>
+        </ul>
+      </div>
+
+      <div class="sdk-card">
+        <h3>verify.js</h3>
+        <p>Signature verification against a public key.</p>
+        <ul class="func-list">
+          <li>verifyClaim(claim, publicKey)</li>
+          <li>ErrorCode</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <h2>Quick Start</h2>
+    <div class="claim-example">
+      <pre><span class="key">import</span> { generateKeyPair, createClaim, verifyClaim } <span class="key">from</span> <span class="string">'./sdk/src/index.js'</span>;
+
+<span class="key">// Generate a key pair</span>
+<span class="key">const</span> { privateKey, publicKey, fingerprint } = generateKeyPair();
+
+<span class="key">// Create and sign a claim</span>
+<span class="key">const</span> claim = createClaim({
+  type: <span class="string">'mir.transaction.completed'</span>,
+  domain: <span class="string">'marketplace.example.com'</span>,
+  subject: <span class="string">'a55bea0a...'</span>,
+  privateKey,
+  publicKey,
+});
+
+<span class="key">// Verify</span>
+<span class="key">const</span> result = verifyClaim(claim, publicKey);
+console.log(result.valid); <span class="key">// true</span></pre>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <h2>Design Constraints</h2>
+    <div class="principles-grid">
+      <div class="principle-card">
+        <h3>Zero Dependencies</h3>
+        <p>Uses only the Node.js built-in <code>crypto</code> module. No external packages.</p>
+      </div>
+      <div class="principle-card">
+        <h3>Deterministic</h3>
+        <p>Same inputs always produce the same canonical bytes and the same Ed25519 signature.</p>
+      </div>
+      <div class="principle-card">
+        <h3>Conformant</h3>
+        <p>Passes all 30 tests and all 6 normative test vectors. The reference implementation for interoperability.</p>
+      </div>
+    </div>
+
+    <div style="margin-top: 3rem; text-align: center;">
+      <a href="/test-vectors" class="btn-primary">Test Vectors</a>
+      <a href="/spec/04-signature-model" class="btn-secondary" style="margin-left: 1rem;">Signature Model</a>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,68 @@
+<% const pageTitle = 'JSON Schema' %>
+<% const pageDescription = 'MIR Protocol JSON Schema (draft-07) for validating MIR claims.' %>
+<%- include('partials/header') %>
+
+<div class="page-header">
+  <h1>JSON Schema</h1>
+  <p>Draft-07 schema for validating MIR claims. All required fields, type patterns, and format constraints.</p>
+</div>
+
+<section class="section">
+  <div class="container">
+    <% if (schema) { %>
+    <div class="schema-block">
+      <pre><%= schema %></pre>
+    </div>
+    <% } else { %>
+    <p style="color: rgba(255,255,255,0.6); text-align: center;">Schema file not found at <code>protocol/schemas/mir-claim.schema.json</code>.</p>
+    <% } %>
+
+    <div style="margin-top: 3rem;">
+      <h2>Validated Fields</h2>
+      <table class="spec-table">
+        <thead>
+          <tr>
+            <th>Field</th>
+            <th>Constraint</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code style="color: #4fd1c5;">mir</code></td>
+            <td style="color: rgba(255,255,255,0.7);">Integer, must equal <code>1</code></td>
+          </tr>
+          <tr>
+            <td><code style="color: #4fd1c5;">type</code></td>
+            <td style="color: rgba(255,255,255,0.7);">Core (<code>mir.{category}.{action}</code>) or extension (<code>{domain}:{category}.{action}</code>)</td>
+          </tr>
+          <tr>
+            <td><code style="color: #4fd1c5;">domain</code></td>
+            <td style="color: rgba(255,255,255,0.7);">Valid DNS hostname. No wildcards, no IPs.</td>
+          </tr>
+          <tr>
+            <td><code style="color: #4fd1c5;">subject</code></td>
+            <td style="color: rgba(255,255,255,0.7);">64-character lowercase hex string</td>
+          </tr>
+          <tr>
+            <td><code style="color: #4fd1c5;">timestamp</code></td>
+            <td style="color: rgba(255,255,255,0.7);">ISO 8601 with timezone</td>
+          </tr>
+          <tr>
+            <td><code style="color: #4fd1c5;">keyFingerprint</code></td>
+            <td style="color: rgba(255,255,255,0.7);">64-character lowercase hex (SHA-256 of public key)</td>
+          </tr>
+          <tr>
+            <td><code style="color: #4fd1c5;">sig</code></td>
+            <td style="color: rgba(255,255,255,0.7);">86 characters, base64url without padding (64 bytes decoded)</td>
+          </tr>
+          <tr>
+            <td><code style="color: #4fd1c5;">metadata</code></td>
+            <td style="color: rgba(255,255,255,0.7);">Optional object, max 4 KB serialized, no PII</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

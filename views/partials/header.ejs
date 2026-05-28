@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= typeof pageTitle !== 'undefined' ? pageTitle + ' — ' : '' %>MIR Protocol — Memory Infrastructure Registry</title>
+  <meta name="description" content="<%= typeof pageDescription !== 'undefined' ? pageDescription : 'Memory Infrastructure Registry (MIR) Protocol — an open specification for portable, domain-signed, cryptographically verifiable participation claims. Not related to Mirror Protocol.' %>">
+  <meta property="og:title" content="<%= typeof pageTitle !== 'undefined' ? pageTitle + ' — ' : '' %>MIR Protocol — Memory Infrastructure Registry">
+  <meta property="og:description" content="Memory Infrastructure Registry (MIR) — an open specification for portable, domain-signed, cryptographically verifiable participation claims.">
+  <meta property="og:url" content="https://mirprotocol.net<%= currentPath %>">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://mirprotocol.net/images/mir-logo.webp">
+  <meta name="twitter:card" content="summary">
+  <link rel="canonical" href="https://mirprotocol.net<%= currentPath %>">
+  <link rel="icon" type="image/webp" href="/images/mir-logo.webp">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a href="/" class="header-logo">
+      <img src="/images/mir-logo.webp" alt="MIR" onerror="this.style.display='none'">
+      <span>MIR Protocol</span>
+    </a>
+    <button class="mobile-toggle" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="header-nav">
+      <a href="/spec" class="<%= currentPath === '/spec' ? 'active' : '' %>">Specification</a>
+      <a href="/sdk" class="<%= currentPath === '/sdk' ? 'active' : '' %>">SDK</a>
+      <a href="/test-vectors" class="<%= currentPath === '/test-vectors' ? 'active' : '' %>">Test Vectors</a>
+      <a href="/schema" class="<%= currentPath === '/schema' ? 'active' : '' %>">Schema</a>
+      <a href="https://mirregistry.org" target="_blank" rel="noopener">MIR.org</a>
+    </nav>
+  </header>
+  <main>

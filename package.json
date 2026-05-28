@@ -1,0 +1,19 @@
+{
+  "name": "mirprotocol-net",
+  "version": "1.0.0",
+  "description": "MIR Protocol specification website",
+  "type": "module",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "node --watch app.js"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "helmet": "^8.2.0",
+    "marked": "^18.0.4",
+    "morgan": "^1.10.0"
+  }
+}

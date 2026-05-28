@@ -1,0 +1,171 @@
+<%- include('partials/header') %>
+
+<section class="hero">
+  <span class="version-badge">v0.2.0 — Draft Specification</span>
+  <h1>MIR Protocol</h1>
+  <p class="subtitle">Memory Infrastructure Registry</p>
+  <p class="mission">An open specification for recording and verifying participation claims &mdash; cryptographically signed by the issuing domain, independently verifiable by anyone, and portable across systems without reliance on any central authority.</p>
+  <p class="subtitle" style="max-width: 700px; font-size: 1rem; margin-bottom: 2.5rem;">MIR Protocol defines the portable, domain-signed claim format. Policy decisions, trust tiers, and scoring are an optional application layer built on top.</p>
+  <div class="cta-buttons">
+    <a href="/spec/01-overview" class="btn-primary">Read the Spec</a>
+    <a href="/sdk" class="btn-secondary">Reference SDK</a>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <h2 class="center">Core Principles</h2>
+    <div class="principles-grid">
+      <div class="principle-card">
+        <h3>Self-Contained Claims</h3>
+        <p>Every claim carries an Ed25519 signature. Verification requires only the claim and the domain's public key. No registry call, no API key, no account.</p>
+      </div>
+      <div class="principle-card">
+        <h3>No Central Authority</h3>
+        <p>Registries provide discovery and availability. They are not trust anchors. They cannot forge, modify, or invalidate claims.</p>
+      </div>
+      <div class="principle-card">
+        <h3>Non-Scoring</h3>
+        <p>MIR records participation. It does not calculate trust, reputation, or behavioral rankings. Your policy engine applies your rules.</p>
+      </div>
+      <div class="principle-card">
+        <h3>Non-Evaluative</h3>
+        <p>MIR proves who signed a claim and that it hasn't been altered. It does not judge whether the claim is true.</p>
+      </div>
+      <div class="principle-card">
+        <h3>Privacy-Minimizing</h3>
+        <p>Subject identifiers are domain-scoped hashes. No plaintext PII enters the protocol. The same person has different hashes on different domains.</p>
+      </div>
+      <div class="principle-card">
+        <h3>Survives Key Rotation</h3>
+        <p>Historical claims remain verifiable even as domains rotate signing keys. Retired keys stay published with validity windows so verifiers can select the correct key over time.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <h2 class="center">Architecture</h2>
+    <p class="section-intro">Claims flow from domains to verifiers. Registries are optional infrastructure &mdash; useful but architecturally replaceable.</p>
+    <div class="architecture-box">
+      <pre>
+  +--------------+          +--------------+          +------------+
+  |    Domain    |  sign    |    Claim     |  verify  |  Verifier  |
+  |  (key pair)  |----------| (portable)   |----------|  (anyone)  |
+  +--------------+          +--------------+          +------------+
+                                   |
+                                   | optional
+                                   v
+                            +--------------+
+                            |   Registry   |
+                            |  (discover,  |
+                            |  timestamp,  |
+                            |    index)    |
+                            +--------------+</pre>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <h2 class="center">Claim Structure</h2>
+    <p class="section-intro">A MIR claim is a signed JSON document. It is the fundamental unit of the protocol.</p>
+    <div class="claim-example">
+      <pre>{
+  <span class="key">"mir"</span>: <span class="number">1</span>,
+  <span class="key">"type"</span>: <span class="string">"mir.transaction.completed"</span>,
+  <span class="key">"domain"</span>: <span class="string">"marketplace.example.com"</span>,
+  <span class="key">"subject"</span>: <span class="string">"a55bea0a6788794ef1307951...f63ae618"</span>,
+  <span class="key">"timestamp"</span>: <span class="string">"2026-02-16T15:30:00Z"</span>,
+  <span class="key">"metadata"</span>: { <span class="key">"currency"</span>: <span class="string">"USD"</span>, <span class="key">"count"</span>: <span class="number">1</span> },
+  <span class="key">"keyFingerprint"</span>: <span class="string">"e3b0c44298fc1c149afbf4c8...7852b855"</span>,
+  <span class="key">"sig"</span>: <span class="string">"base64url-encoded-ed25519-signature"</span>
+}</pre>
+    </div>
+    <p style="color: rgba(255,255,255,0.55); font-size: 0.88rem; margin-top: 1rem; text-align: center;">The <code style="background: rgba(229,165,75,0.1); color: #e5a54b; padding: 0.1rem 0.35rem; border-radius: 3px; font-size: 0.85em;">keyFingerprint</code> field is the key selector &mdash; it tells verifiers which of the domain's published public keys signed this claim. No trial-and-error required.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <h2 class="center">How to Implement</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>Understand the claim structure</h3>
+          <p>Required fields, types, subject identifier derivation, and immutability rules.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>Generate keys and publish</h3>
+          <p>Create an Ed25519 key pair and publish the public key via DNS TXT at <code>_mir-key.{domain}</code> or <code>.well-known/mir.json</code>.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3>Implement canonical serialization</h3>
+          <p>MIR Canonical JSON (MCJ): sort keys lexicographically, remove <code>sig</code>, compact JSON, encode as UTF-8. Defined normatively in the <a href="/spec/04-signature-model">Signature Model</a>. This produces the signing input.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h3>Sign and verify claims</h3>
+          <p>Sign canonical bytes with Ed25519. Encode signatures as base64url without padding (86 characters).</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <h3>Validate against test vectors</h3>
+          <p>Six normative <a href="/test-vectors">test vectors</a> with real Ed25519 signatures cover all verification scenarios.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">6</div>
+        <div class="step-content">
+          <h3>Check conformance</h3>
+          <p>Review the <a href="/spec/11-conformance">conformance requirements</a> for signers, verifiers, and registries.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <h2 class="center">Specification Documents</h2>
+    <p class="section-intro">The full protocol is defined across 11 documents.</p>
+    <table class="spec-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Document</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% specDocs.forEach(doc => { %>
+        <tr>
+          <td class="doc-num"><%= doc.num %></td>
+          <td><a href="/spec/<%= doc.slug %>"><%= doc.title %></a></td>
+          <td style="color: rgba(255,255,255,0.6); font-size: 0.9rem;"><%= doc.desc %></td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container" style="text-align: center;">
+    <p style="color: rgba(255,255,255,0.4); font-size: 0.85rem;">MIR stands for Memory Infrastructure Registry. This project is not related to Mirror Protocol, MIR token, or any cryptocurrency.</p>
+  </div>
+</section>
+
+<%- include('partials/footer') %>
